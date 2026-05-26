@@ -373,8 +373,14 @@ function generateRefCode() {
   const el = document.getElementById('refCode');
   if (el) el.textContent = code;
 }
-function goHome()  { showToast('Đang chuyển về trang chủ...', '', '🏠'); }
-function goLogin() { showToast('Đang mở trang đăng nhập...', '', '🔐'); }
+function goHome() {
+  showToast('Đang chuyển về trang chủ...', '', '🏠');
+  setTimeout(() => { window.location.href = 'index.html'; }, 800);
+}
+function goLogin() {
+  showToast('Đang mở trang đăng nhập...', '', '🔐');
+  setTimeout(() => { window.location.href = 'index.html'; }, 800);
+}
 
 /* ─── TOAST NOTIFICATION ─────────────────────────────────────── */
 let toastTimeout;
