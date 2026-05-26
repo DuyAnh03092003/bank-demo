@@ -135,7 +135,7 @@ async function submitForm() {
           subject_email: state.formData.email,
           consent_source_id: Date.now(),
           service_source_id: "75998365289590102",
-          create_time: Date.now(),
+          create_time: Date.now()-1000, // Giả lập thời gian tạo trước khi gửi
           consent_status: "agree_all",
           assignees: []
         }
