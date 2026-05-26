@@ -108,7 +108,8 @@ async function submitForm() {
           address: "",
           province: "",
           district: "",
-          wards: ""
+          wards: "",
+          start_date: new Date().toISOString().slice(0, 10).replace(/-/g, ''),
         }
       ])
     });
