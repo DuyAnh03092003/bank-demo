@@ -1,49 +1,54 @@
 /* ═══════════════════════════════════════════════════════════════
-   NEOBANK — Customer Consent Flow
-   script.js
+   VIETBANK — Customer Consent & Registration Flow
+   script.js (Tích hợp DataTrust API)
    ═══════════════════════════════════════════════════════════════ */
 
-/* ─── STATE ──────────────────────────────────────────────────── */
+/* ─── STATE MANAGEMENT ───────────────────────────────────────── */
 const state = {
   currentStep: 1,
   totalSteps: 5,
   consentChecked: false,
   otpCountdownTimer: null,
   verifiedItems: { cccd: false, face: false },
-  formData: {}
+  formData: {
+    purposes: [] // Lưu trữ các dịch vụ khách hàng chọn ở Bước 5
+  }
 };
 
-/* ─── INIT ───────────────────────────────────────────────────── */
+/* ─── APP INITIALIZATION ─────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
-  updateProgress();
-  initOtpInputs();
-  generateRefCode();
+  if (document.getElementById('progressFill')) {
+    updateProgress();
+    initOtpInputs();
+    generateRefCode();
+    initLiveValidation();
+  }
 });
 
 /* ─── STEP NAVIGATION ────────────────────────────────────────── */
 function goToStep(targetStep) {
-  // Validate before leaving step 1
   if (state.currentStep === 1 && targetStep > 1) {
     if (!validateStep1()) return;
   }
 
-  // Save step 1 data
   if (state.currentStep === 1) {
-    state.formData.phone = document.getElementById('phone').value;
-    state.formData.email = document.getElementById('email').value;
-    state.formData.fullname = document.getElementById('fullname').value;
-    document.getElementById('otpPhoneDisplay').textContent = '0' + state.formData.phone;
-    document.getElementById('successEmail').textContent = state.formData.email;
+    state.formData.phone = document.getElementById('phone').value.trim();
+    state.formData.email = document.getElementById('email').value.trim();
+    state.formData.fullname = document.getElementById('fullname').value.trim().replace(/\s+/g, " ").toUpperCase();
+    
+    const otpDisplay = document.getElementById('otpPhoneDisplay');
+    const emailDisplay = document.getElementById('successEmail');
+    if (otpDisplay) otpDisplay.textContent = '0' + state.formData.phone;
+    if (emailDisplay) emailDisplay.textContent = state.formData.email;
   }
 
-  // Start OTP countdown when entering step 3
   if (targetStep === 3 && state.currentStep !== 3) {
     setTimeout(startOtpCountdown, 400);
   }
 
-  // Animate out current panel
   const currentPanel = document.getElementById('step' + state.currentStep)
     || document.getElementById('stepSuccess');
+  
   if (currentPanel) {
     currentPanel.style.animation = 'stepOut 0.2s ease forwards';
     setTimeout(() => {
@@ -68,43 +73,140 @@ function showStep(targetStep) {
   }
 }
 
-function submitForm() {
-  // Show loading on button
+/* ─── FORM SUBMISSION (STEP 5) — GỬI DỮ LIỆU ĐẾN SERVER DATATRUST ─── */
+async function submitForm() {
   const btn = event.target.closest('.btn');
+  if (!btn) return;
+  
   const originalHTML = btn.innerHTML;
-  btn.innerHTML = '<div class="upload-spinner" style="width:22px;height:22px;border-width:2px"></div>';
+  // Hiển thị trạng thái Loading
+  btn.innerHTML = '<div class="upload-spinner" style="width:22px;height:22px;border-width:2px"></div><span style="margin-left: 8px;">ĐANG XỬ LÝ...</span>';
   btn.disabled = true;
 
-  setTimeout(() => {
+  // Cấu hình thông tin kết nối DataTrust
+  const TOKEN = "eyJraWQiOiIxLTZkNzg2ZTgwLTEyN2QtNGFjZi05OTRmLTk1MjgxMjIyZjQwNSIsImFsZyI6IlJTNTEyIiwidHlwIjoiSldUIn0.eyJpc3MiOiJWVHJ1c3QgSW50ZWdyYXRpb24gLSAxIiwic3ViIjoiVG9rZW4gQWNjZXNzIEludGVncmF0aW9uIiwiZXhwIjoxNzk1MzU1MDQxLCJuYmYiOjE3Nzk4MDMwMzEsImlhdCI6MTc3OTgwMzAzMSwic2NvcGVzIjp7ImFwaXMiOlsid3JpdGUiLCJyZWFkIiwiZGVsZXRlIl19LCJ1c2VySWQiOiI3MjMzOTE4OTY5MjE2MzUyNiIsIndvcmtzcGFjZUlkIjoiNzI5MDIxMTgyOTg4MzkyNzUifQ.CM4NP-yqe6PidyWcuwyuX7P7jZ52bBCnQF0k2p1F5F-lS4CgnpGdHsmzBM-nlESa3Q7ut0y6NCj0XtKsj4DMbb2ipKquAwA224JspXIW0B4cKKcXuSXu0heEDBZ1_SbkY7d1wxIzM6yLxy1Rd23hWD6zwKUxFptcUPd6NoiLBAM.eyJpc3MiOiJEYXRhIFRydXN0IEludGVyZ3JhdGlvbiAtIDEiLCJzdWIiOiJUb2tlbiBBY2Nlc3MgSW50ZWdyYXRpb24iLCJleHAiOjE3OTIzNzQyOTcsIm5iZiI6MTc3NjgyMjI4NywiaWF0IjoxNzc2ODIyMjg3LCJzY29wZXMiOnsiYXBpcyI6WyJ3cml0ZSIsInJlYWQiLCJkZWxldGUiXX0sInVzZXJJZCI6IjcyMzM5MTgxNDQyMjE4NjAzIiwid29ya3NwYWNlSWQiOiI3MjkwMjA5OTMxMDczMDI3NSJ9.DUl2muVpKOAn1pNYtMB4eRrWPvcjoqoTjerAvnTRXYGhcg5BaNkpl_OqiEWyT9rTPnAlwjeLo5ljkXeGhyxzzePncYP6wdxPpiq0yCmM1aonP0kEqGgD1tn4ekFyCyW2gzmuc0l0nuiMqBCKhek_pYC6nYzVw9tsRTV1GLFoLVU";
+  const BASE_URL = "https://apis-demo.datatrust.one/72902099310730275";
+  const sourceId = Date.now();
+
+  try {
+    // 1. Gửi thông tin cá nhân khách hàng (Individual Customer)
+    const customerRes = await fetch(`${BASE_URL}/integration/individual-customers`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: TOKEN
+      },
+      body: JSON.stringify([
+        {
+          name: state.formData.fullname,
+          phone_number: '0' + state.formData.phone,
+          email: state.formData.email,
+          source_id: sourceId,
+          service_source_id: "75998364686415412",
+          type: "Cá nhân",
+          status: "1",
+          address: "",
+          province: "",
+          district: "",
+          wards: ""
+        }
+      ])
+    });
+
+    const customerData = await customerRes.json();
+    if (!customerRes.ok) {
+      console.error("❌ Create customer error:", customerData);
+      throw new Error("Tạo hồ sơ khách hàng thất bại");
+    }
+
+    // Định dạng chuỗi danh mục dịch vụ đã chọn để đưa vào chiến dịch đồng ý dữ liệu
+    const purposeString = state.formData.purposes.length > 0 
+      ? ` [Mục đích sử dụng: ${state.formData.purposes.join(', ')}]` 
+      : "";
+
+    // 2. Tạo Payload Consent gửi đến hệ thống quản lý đồng ý dữ liệu
+    const payload = {
+      campaign_name: "Lấy sự đồng ý sử dụng dữ liệu khách hàng VietBank" + purposeString,
+      datas: [
+        {
+          subject_source_id: sourceId,
+          subject_name: state.formData.fullname,
+          subject_phone: '0' + state.formData.phone,
+          subject_email: state.formData.email,
+          consent_source_id: Date.now(),
+          service_source_id: "75998365289590102",
+          create_time: Date.now(),
+          consent_status: "agree_all",
+          assignees: []
+        }
+      ],
+      source: {
+        system_name: "VietBank Digital Web",
+        channel_name: "web_form"
+      },
+      campaign_source_id: "3f72be8d-6d6c-4cc6-9c5f-b8b569dddf17",
+      consent_type: "consent_right_to_know",
+      subject_type: "service"
+    };
+
+    const formDataObject = new FormData();
+    formDataObject.append("payload", JSON.stringify(payload));
+
+    const consentRes = await fetch(`${BASE_URL}/integration/consent`, {
+      method: "POST",
+      headers: {
+        Authorization: TOKEN
+      },
+      body: formDataObject
+    });
+
+    const consentText = await consentRes.text();
+    if (!consentRes.ok) {
+      console.error("❌ Consent error:", consentText);
+      throw new Error("Gửi chấp thuận dữ liệu (Consent) thất bại");
+    }
+
+    console.log("✅ DataTrust Flow Success:", consentText);
+    showToast('Xử lý hồ sơ thành công!', 'success', '✓');
+
+    // Chuyển sang giao diện thông báo đăng ký thành công hoàn tất (Step Success)
+    const step5 = document.getElementById('step5');
+    if (step5) {
+      step5.style.animation = 'stepOut 0.2s ease forwards';
+      setTimeout(() => {
+        step5.classList.remove('active');
+        step5.style.animation = '';
+        
+        state.currentStep = 0;
+        const successPanel = document.getElementById('stepSuccess');
+        if (successPanel) successPanel.classList.add('active');
+        
+        const progressContainer = document.querySelector('.progress-container');
+        if (progressContainer) progressContainer.style.opacity = '0.4';
+      }, 180);
+    }
+
+  } catch (error) {
+    console.error("❌ Flow error:", error);
+    showToast('Có lỗi kết nối hệ thống. Vui lòng thử lại.', 'error', '✕');
+    alert("Có lỗi xảy ra trong quá trình xử lý dữ liệu an toàn. Vui lòng thử lại.");
+
+    // Hoàn tác trạng thái của nút bấm nếu xảy ra lỗi
     btn.innerHTML = originalHTML;
     btn.disabled = false;
-
-    // Animate out step 5
-    const step5 = document.getElementById('step5');
-    step5.style.animation = 'stepOut 0.2s ease forwards';
-    setTimeout(() => {
-      step5.classList.remove('active');
-      step5.style.animation = '';
-      // Show success
-      state.currentStep = 0;
-      const successPanel = document.getElementById('stepSuccess');
-      successPanel.classList.add('active');
-      successPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      // Hide progress on success
-      document.querySelector('.progress-container').style.opacity = '0.4';
-    }, 180);
-
-  }, 1800);
+  }
 }
 
-/* ─── PROGRESS UPDATE ────────────────────────────────────────── */
+/* ─── PROGRESS BAR & DOTS ────────────────────────────────────── */
 function updateProgress() {
   if (state.currentStep === 0) return;
 
-  const pct = ((state.currentStep - 1) / state.totalSteps) * 100;
-  document.getElementById('progressFill').style.width = pct + '%';
+  const progressFill = document.getElementById('progressFill');
+  if (progressFill) {
+    const pct = ((state.currentStep - 1) / state.totalSteps) * 100;
+    progressFill.style.width = pct + '%';
+  }
 
-  // Update step dots
   document.querySelectorAll('.step-item').forEach(item => {
     const s = parseInt(item.dataset.step);
     item.classList.remove('active', 'completed');
@@ -113,23 +215,21 @@ function updateProgress() {
   });
 }
 
-/* ─── STEP 1: VALIDATION ─────────────────────────────────────── */
+/* ─── STEP 1: VALIDATION LOGIC ───────────────────────────────── */
 function validateStep1() {
   let valid = true;
-  const phone    = document.getElementById('phone');
-  const email    = document.getElementById('email');
+  const phone = document.getElementById('phone');
+  const email = document.getElementById('email');
   const fullname = document.getElementById('fullname');
 
-  // Phone validation
-  const phoneVal = phone.value.replace(/\D/g,'');
-  if (!phoneVal || phoneVal.length < 8) {
+  const phoneVal = phone.value.replace(/\D/g, '');
+  if (!phoneVal || phoneVal.length < 9) {
     showFieldError(phone, 'phoneError');
     valid = false;
   } else {
     clearFieldError(phone, 'phoneError');
   }
 
-  // Email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!email.value || !emailRegex.test(email.value)) {
     showFieldError(email, 'emailError');
@@ -138,7 +238,6 @@ function validateStep1() {
     clearFieldError(email, 'emailError');
   }
 
-  // Name validation
   if (!fullname.value.trim() || fullname.value.trim().length < 2) {
     showFieldError(fullname, 'nameError');
     valid = false;
@@ -154,15 +253,17 @@ function validateStep1() {
 
 function showFieldError(input, errorId) {
   input.classList.add('error');
-  document.getElementById(errorId).classList.add('visible');
-}
-function clearFieldError(input, errorId) {
-  input.classList.remove('error');
-  document.getElementById(errorId).classList.remove('visible');
+  const errorEl = document.getElementById(errorId);
+  if (errorEl) errorEl.classList.add('visible');
 }
 
-// Live validation
-document.addEventListener('DOMContentLoaded', () => {
+function clearFieldError(input, errorId) {
+  input.classList.remove('error');
+  const errorEl = document.getElementById(errorId);
+  if (errorEl) errorEl.classList.remove('visible');
+}
+
+function initLiveValidation() {
   document.getElementById('phone').addEventListener('input', function() {
     if (this.value) clearFieldError(this, 'phoneError');
   });
@@ -172,45 +273,51 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('fullname').addEventListener('input', function() {
     if (this.value) clearFieldError(this, 'nameError');
   });
-});
+}
 
-/* ─── STEP 2: CONSENT TOGGLE ─────────────────────────────────── */
+/* ─── STEP 2: CONSENT TOGGLE & MODAL ─────────────────────────── */
 function toggleConsent() {
   state.consentChecked = !state.consentChecked;
 
-  const checkbox    = document.getElementById('checkboxEl');
-  const wrapper     = document.getElementById('consentCheckbox');
-  const consentBtn  = document.getElementById('consentBtn');
+  const checkbox = document.getElementById('checkboxEl');
+  const wrapper = document.getElementById('consentCheckbox');
+  const consentBtn = document.getElementById('consentBtn');
 
-  checkbox.classList.toggle('checked', state.consentChecked);
-  wrapper.classList.toggle('checked', state.consentChecked);
-  consentBtn.disabled = !state.consentChecked;
+  if (checkbox) checkbox.classList.toggle('checked', state.consentChecked);
+  if (wrapper) wrapper.classList.toggle('checked', state.consentChecked);
+  if (consentBtn) consentBtn.disabled = !state.consentChecked;
 
   if (state.consentChecked) {
     showToast('Đã xác nhận đồng ý', 'success', '✓');
   }
 }
 
-/* ─── STEP 2: MODAL ──────────────────────────────────────────── */
 function openModal() {
-  document.getElementById('termsModal').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  const modal = document.getElementById('termsModal');
+  if (modal) {
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
 }
+
 function closeModal() {
-  document.getElementById('termsModal').classList.remove('open');
-  document.body.style.overflow = '';
+  const modal = document.getElementById('termsModal');
+  if (modal) {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
 }
+
 function closeModalOutside(e) {
   if (e.target === document.getElementById('termsModal')) closeModal();
 }
 
-/* ─── STEP 3: OTP ────────────────────────────────────────────── */
+/* ─── STEP 3: OTP KEYPAD PROCESSING ──────────────────────────── */
 function initOtpInputs() {
   const boxes = document.querySelectorAll('.otp-box');
   boxes.forEach((box, idx) => {
-    // Input event
     box.addEventListener('input', (e) => {
-      const val = e.target.value.replace(/\D/g,'');
+      const val = e.target.value.replace(/\D/g, '');
       e.target.value = val;
       box.classList.toggle('filled', val.length > 0);
       box.classList.remove('error');
@@ -218,13 +325,11 @@ function initOtpInputs() {
       if (val && idx < boxes.length - 1) {
         boxes[idx + 1].focus();
       }
-      // Auto-verify when all 6 filled
       if (allOtpFilled()) {
         setTimeout(() => verifyOtp(), 200);
       }
     });
 
-    // Backspace: go to previous box
     box.addEventListener('keydown', (e) => {
       if (e.key === 'Backspace' && !box.value && idx > 0) {
         boxes[idx - 1].focus();
@@ -233,16 +338,15 @@ function initOtpInputs() {
       }
     });
 
-    // Paste handler
     box.addEventListener('paste', (e) => {
       e.preventDefault();
-      const text = e.clipboardData.getData('text').replace(/\D/g,'');
+      const text = e.clipboardData.getData('text').replace(/\D/g, '');
       if (text.length >= 6) {
         boxes.forEach((b, i) => {
           b.value = text[i] || '';
           b.classList.toggle('filled', !!text[i]);
         });
-        boxes[5].focus();
+        if (boxes[5]) boxes[5].focus();
         setTimeout(() => verifyOtp(), 200);
       }
     });
@@ -265,15 +369,13 @@ function verifyOtp() {
     return;
   }
 
-  // Simulate: accept any 6-digit OTP, but reject "000000"
   if (otp === '000000') {
     boxes.forEach(b => { b.classList.add('error'); b.classList.remove('filled'); b.value = ''; });
     showToast('Mã OTP không chính xác', 'error', '✕');
-    boxes[0].focus();
+    if (boxes[0]) boxes[0].focus();
     return;
   }
 
-  // Success
   boxes.forEach(b => b.disabled = true);
   showToast('Xác thực OTP thành công!', 'success', '✓');
   clearInterval(state.otpCountdownTimer);
@@ -284,50 +386,47 @@ function startOtpCountdown() {
   clearInterval(state.otpCountdownTimer);
   let timeLeft = 60;
   const countdownEl = document.getElementById('countdown');
-  const timerRow    = document.getElementById('otpTimerRow');
-  const resendRow   = document.getElementById('resendRow');
+  const timerRow = document.getElementById('otpTimerRow');
+  const resendRow = document.getElementById('resendRow');
 
-  timerRow.classList.remove('hidden');
-  resendRow.classList.add('hidden');
+  if (timerRow) timerRow.classList.remove('hidden');
+  if (resendRow) resendRow.classList.add('hidden');
 
-  // Reset OTP boxes
   document.querySelectorAll('.otp-box').forEach(b => {
     b.value = ''; b.disabled = false;
-    b.classList.remove('filled','error');
+    b.classList.remove('filled', 'error');
   });
-  document.querySelectorAll('.otp-box')[0].focus();
+  const firstBox = document.querySelectorAll('.otp-box')[0];
+  if (firstBox) firstBox.focus();
 
-  countdownEl.textContent = timeLeft;
+  if (countdownEl) countdownEl.textContent = timeLeft;
   state.otpCountdownTimer = setInterval(() => {
     timeLeft--;
-    countdownEl.textContent = timeLeft;
+    if (countdownEl) countdownEl.textContent = timeLeft;
     if (timeLeft <= 0) {
       clearInterval(state.otpCountdownTimer);
-      timerRow.classList.add('hidden');
-      resendRow.classList.remove('hidden');
+      if (timerRow) timerRow.classList.add('hidden');
+      if (resendRow) resendRow.classList.remove('hidden');
     }
   }, 1000);
 }
 
-/* ─── STEP 4: UPLOAD SIMULATION ──────────────────────────────── */
+/* ─── STEP 4: EKYC UPLOAD SIMULATION ─────────────────────────── */
 function simulateUpload(type) {
-  const zoneId   = type === 'cccd' ? 'cccdZone' : 'faceZone';
+  const zoneId = type === 'cccd' ? 'cccdZone' : 'faceZone';
   const statusId = type === 'cccd' ? 'cccdStatus' : 'faceStatus';
-  const cardId   = type === 'cccd' ? 'cccdCard' : 'faceCard';
-  const zone     = document.getElementById(zoneId);
-  const status   = document.getElementById(statusId);
-  const card     = document.getElementById(cardId);
+  const cardId = type === 'cccd' ? 'cccdCard' : 'faceCard';
+  const zone = document.getElementById(zoneId);
+  const status = document.getElementById(statusId);
+  const card = document.getElementById(cardId);
 
-  if (state.verifiedItems[type]) return; // already done
+  if (state.verifiedItems[type] || !zone) return;
 
-  // Show loading
   zone.classList.add('loading');
   zone.innerHTML = `
-    <div class="upload-icon">
-      <div class="upload-spinner"></div>
-    </div>
+    <div class="upload-icon"><div class="upload-spinner"></div></div>
     <div class="upload-text">Đang xử lý...</div>
-    <div class="upload-hint">Vui lòng chờ</div>
+    <div class="upload-hint">Vui lòng chờ giây lát</div>
   `;
 
   const delay = type === 'cccd' ? 2000 : 2500;
@@ -342,61 +441,73 @@ function simulateUpload(type) {
         </svg>
       </div>
       <div class="upload-text" style="color:var(--green)">Xác thực thành công!</div>
-      <div class="upload-hint">${type === 'cccd' ? 'CCCD đã được xác minh' : 'Khuôn mặt đã khớp'}</div>
+      <div class="upload-hint">${type === 'cccd' ? 'CCCD đã được xác minh' : 'Khuôn mặt đã trùng khớp'}</div>
     `;
-    card.classList.add('done');
-    status.innerHTML = `<span style="color:var(--green);background:var(--green-light);padding:4px 10px;border-radius:100px;">✓ Xong</span>`;
+    if (card) card.classList.add('done');
+    if (status) status.innerHTML = `<span style="color:var(--green);background:var(--green-light);padding:4px 10px;border-radius:100px;">✓ Xong</span>`;
 
-    // Update verify progress
     const both = state.verifiedItems.cccd && state.verifiedItems.face;
-    const pct  = (state.verifiedItems.cccd ? 50 : 0) + (state.verifiedItems.face ? 50 : 0);
-    document.getElementById('verifyProgress').style.width = pct + '%';
+    const pct = (state.verifiedItems.cccd ? 50 : 0) + (state.verifiedItems.face ? 50 : 0);
+    const verifyProgressBar = document.getElementById('verifyProgress');
+    if (verifyProgressBar) verifyProgressBar.style.width = pct + '%';
 
     if (both) {
-      document.getElementById('verifyNextBtn').disabled = false;
+      const nextBtn = document.getElementById('verifyNextBtn');
+      if (nextBtn) nextBtn.disabled = false;
       showToast('Xác thực danh tính hoàn tất!', 'success', '✓');
     } else {
-      const next = type === 'cccd' ? 'Tiếp tục xác thực khuôn mặt' : 'Tiếp tục chụp CCCD';
       showToast(type === 'cccd' ? 'CCCD xác thực thành công!' : 'Khuôn mặt xác thực thành công!', 'success', '✓');
     }
   }, delay);
 }
 
-/* ─── PURPOSE CHIPS ──────────────────────────────────────────── */
+/* ─── MISC CHIPS UTILS (Cập nhật lưu trữ dịch vụ đã chọn) ──────── */
 function togglePurpose(el) {
   el.classList.toggle('selected');
+  const text = el.textContent.trim();
+  
+  if (el.classList.contains('selected')) {
+    if (!state.formData.purposes.includes(text)) {
+      state.formData.purposes.push(text);
+    }
+  } else {
+    state.formData.purposes = state.formData.purposes.filter(item => item !== text);
+  }
 }
 
-/* ─── SUCCESS SCREEN ─────────────────────────────────────────── */
 function generateRefCode() {
   const code = Math.floor(10000000 + Math.random() * 90000000);
   const el = document.getElementById('refCode');
   if (el) el.textContent = code;
 }
+
+/* ─── ROUTING CHUYỂN TRANG CHỦ MỚI (INDEX.HTML) ───────────────── */
 function goHome() {
   showToast('Đang chuyển về trang chủ...', '', '🏠');
   setTimeout(() => { window.location.href = 'index.html'; }, 800);
 }
+
 function goLogin() {
   showToast('Đang mở trang đăng nhập...', '', '🔐');
   setTimeout(() => { window.location.href = 'index.html'; }, 800);
 }
 
-/* ─── TOAST NOTIFICATION ─────────────────────────────────────── */
+/* ─── TOAST CONTROLLER ───────────────────────────────────────── */
 let toastTimeout;
 function showToast(msg, type = '', icon = '') {
   clearTimeout(toastTimeout);
-  const toast    = document.getElementById('toast');
+  const toast = document.getElementById('toast');
   const toastMsg = document.getElementById('toastMsg');
-  const toastIcon= document.getElementById('toastIcon');
+  const toastIcon = document.getElementById('toastIcon');
+
+  if (!toast || !toastMsg) return;
 
   toast.className = 'toast';
   if (type) toast.classList.add(type);
   toastMsg.textContent = msg;
-  toastIcon.textContent = icon;
+  if (toastIcon) toastIcon.textContent = icon;
 
-  // Force reflow
-  void toast.offsetWidth;
+  void toast.offsetWidth; // Force Reflow
   toast.classList.add('show');
 
   toastTimeout = setTimeout(() => toast.classList.remove('show'), 3000);
@@ -404,10 +515,8 @@ function showToast(msg, type = '', icon = '') {
 
 /* ─── KEYBOARD NAVIGATION ────────────────────────────────────── */
 document.addEventListener('keydown', (e) => {
-  // Close modal on Escape
   if (e.key === 'Escape') closeModal();
 
-  // Enter key advances from step 1
   if (e.key === 'Enter' && state.currentStep === 1) {
     const focused = document.activeElement;
     if (!focused || focused.tagName !== 'BUTTON') {
