@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NeoBank — Đăng ký tài khoản</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════
+       BACKGROUND DECORATIVE ELEMENTS
+  ═══════════════════════════════════════════ -->
+  <div class="bg-orb bg-orb--1"></div>
+  <div class="bg-orb bg-orb--2"></div>
+  <div class="bg-orb bg-orb--3"></div>
+
+  <!-- ═══════════════════════════════════════════
+       HEADER
+  ═══════════════════════════════════════════ -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M10 2L18 7V13L10 18L2 13V7L10 2Z" fill="white" opacity="0.9"/>
+            <path d="M10 5L15 8V12L10 15L5 12V8L10 5Z" fill="white" opacity="0.5"/>
+          </svg>
+        </div>
+        <span class="logo-text">NeoBank</span>
+      </div>
+      <div class="header-subtitle">Đăng ký tài khoản trực tuyến</div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════
+       PROGRESS BAR
+  ═══════════════════════════════════════════ -->
+  <div class="progress-container">
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="steps-row" id="stepsRow">
+      <div class="step-item active" data-step="1">
+        <div class="step-dot"><span>1</span></div>
+        <div class="step-label">Thông tin</div>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step-item" data-step="2">
+        <div class="step-dot"><span>2</span></div>
+        <div class="step-label">Đồng ý</div>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step-item" data-step="3">
+        <div class="step-dot"><span>3</span></div>
+        <div class="step-label">OTP</div>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step-item" data-step="4">
+        <div class="step-dot"><span>4</span></div>
+        <div class="step-label">Xác thực</div>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step-item" data-step="5">
+        <div class="step-dot"><span>5</span></div>
+        <div class="step-label">Hoàn tất</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       MAIN CONTENT WRAPPER
+  ═══════════════════════════════════════════ -->
+  <main class="main-wrapper">
+
+    <!-- ─────────────────────────────────────────
+         STEP 1: THÔNG TIN CÁ NHÂN
+    ───────────────────────────────────────── -->
+    <section class="step-panel active" id="step1">
+      <div class="card">
+        <div class="card-icon-header">
+          <div class="icon-badge">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="8" r="4" stroke="white" stroke-width="2"/>
+              <path d="M4 20C4 16.686 7.582 14 12 14C16.418 14 20 16.686 20 20" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <h2 class="card-title">Thông tin liên hệ</h2>
+        <p class="card-desc">Nhập thông tin để chúng tôi xác minh danh tính của bạn.</p>
+
+        <div class="form-group">
+          <label class="form-label" for="phone">Số điện thoại</label>
+          <div class="input-wrapper">
+            <div class="input-prefix">+84</div>
+            <input type="tel" id="phone" class="form-input with-prefix" placeholder="9xx xxx xxx" maxlength="10" />
+          </div>
+          <span class="error-msg" id="phoneError">Vui lòng nhập số điện thoại hợp lệ</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Email</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <rect x="2" y="4" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M2 7L9 11L16 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <input type="email" id="email" class="form-input with-icon" placeholder="ten@email.com" />
+          </div>
+          <span class="error-msg" id="emailError">Vui lòng nhập email hợp lệ</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="fullname">Họ và tên</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M3 15C3 12.515 5.686 10.5 9 10.5C12.314 10.5 15 12.515 15 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <input type="text" id="fullname" class="form-input with-icon" placeholder="Nguyễn Văn A" />
+          </div>
+          <span class="error-msg" id="nameError">Vui lòng nhập họ và tên</span>
+        </div>
+
+        <button class="btn btn--primary" onclick="goToStep(2)">
+          <span>Tiếp tục</span>
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M7 4L12 9L7 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────────────
+         STEP 2: ĐỒNG Ý XỬ LÝ DỮ LIỆU
+    ───────────────────────────────────────── -->
+    <section class="step-panel" id="step2">
+      <div class="card">
+        <div class="card-icon-header">
+          <div class="icon-badge icon-badge--green">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <h2 class="card-title">Xác nhận sự đồng ý</h2>
+        <p class="card-desc">Vui lòng đọc kỹ và xác nhận các điều khoản bên dưới.</p>
+
+        <!-- Consent items -->
+        <div class="consent-list">
+          <div class="consent-item">
+            <div class="consent-check-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M2.5 7L5.5 10L11.5 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <span>Tôi xác nhận thông tin đã cung cấp là <strong>chính xác</strong> và đầy đủ</span>
+          </div>
+          <div class="consent-item">
+            <div class="consent-check-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M2.5 7L5.5 10L11.5 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <span>Tôi cho phép ngân hàng <strong>xử lý dữ liệu cá nhân</strong> theo quy định pháp luật</span>
+          </div>
+          <div class="consent-item">
+            <div class="consent-check-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M2.5 7L5.5 10L11.5 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <span>Tôi đồng ý với <strong>điều khoản sử dụng dịch vụ</strong> và chính sách bảo mật</span>
+          </div>
+        </div>
+
+        <!-- Terms card -->
+        <div class="terms-card" onclick="openModal()">
+          <div class="terms-card-left">
+            <div class="terms-icon">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <rect x="3" y="2" width="14" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M7 7H13M7 10H13M7 13H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <div class="terms-title">Điều khoản & Điều kiện</div>
+              <div class="terms-subtitle">Nhấn để xem toàn bộ nội dung</div>
+            </div>
+          </div>
+          <div class="terms-arrow">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M7 4L12 9L7 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Agreement checkbox -->
+        <div class="checkbox-wrapper" id="consentCheckbox" onclick="toggleConsent()">
+          <div class="custom-checkbox" id="checkboxEl">
+            <svg class="check-svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M2 6L5 9L10 3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="checkbox-label">Tôi đã đọc và <strong>đồng ý</strong> với tất cả điều khoản trên</span>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn--ghost" onclick="goToStep(1)">Quay lại</button>
+          <button class="btn btn--primary" id="consentBtn" disabled onclick="goToStep(3)">
+            <span>Đồng ý và tiếp tục</span>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M7 4L12 9L7 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────────────
+         STEP 3: OTP
+    ───────────────────────────────────────── -->
+    <section class="step-panel" id="step3">
+      <div class="card">
+        <div class="card-icon-header">
+          <div class="icon-badge icon-badge--purple">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <rect x="5" y="2" width="14" height="20" rx="3" stroke="white" stroke-width="2"/>
+              <circle cx="12" cy="17" r="1.5" fill="white"/>
+              <path d="M9 7H15" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <h2 class="card-title">Nhập mã OTP</h2>
+        <p class="card-desc">Mã xác thực đã được gửi tới số điện thoại</p>
+        <div class="phone-display" id="otpPhoneDisplay">09xx xxx xxx</div>
+
+        <!-- OTP Input boxes -->
+        <div class="otp-row">
+          <input type="text" class="otp-box" maxlength="1" data-index="0" />
+          <input type="text" class="otp-box" maxlength="1" data-index="1" />
+          <input type="text" class="otp-box" maxlength="1" data-index="2" />
+          <div class="otp-separator">—</div>
+          <input type="text" class="otp-box" maxlength="1" data-index="3" />
+          <input type="text" class="otp-box" maxlength="1" data-index="4" />
+          <input type="text" class="otp-box" maxlength="1" data-index="5" />
+        </div>
+
+        <!-- Countdown -->
+        <div class="otp-timer" id="otpTimerRow">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M8 5V8L10 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span>Gửi lại sau <strong id="countdown">60</strong>s</span>
+        </div>
+        <div class="resend-row hidden" id="resendRow">
+          <button class="btn-link" onclick="startOtpCountdown()">Gửi lại mã OTP</button>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn--ghost" onclick="goToStep(2)">Quay lại</button>
+          <button class="btn btn--primary" onclick="verifyOtp()">
+            <span>Xác thực</span>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M7 4L12 9L7 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────────────
+         STEP 4: XÁC THỰC CCCD & KHUÔN MẶT
+    ───────────────────────────────────────── -->
+    <section class="step-panel" id="step4">
+      <div class="card">
+        <div class="card-icon-header">
+          <div class="icon-badge icon-badge--orange">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="6" width="18" height="12" rx="2" stroke="white" stroke-width="2"/>
+              <circle cx="9" cy="12" r="2" stroke="white" stroke-width="1.5"/>
+              <path d="M14 10H18M14 12H16" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <h2 class="card-title">Xác thực danh tính</h2>
+        <p class="card-desc">Hoàn thành 2 bước xác thực để bảo mật tài khoản.</p>
+
+        <!-- ID Card upload -->
+        <div class="verify-card" id="cccdCard">
+          <div class="verify-card-header">
+            <div class="verify-icon">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                <rect x="3" y="7" width="22" height="14" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+                <circle cx="10" cy="14" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M16 11H22M16 14H20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <div class="verify-title">Chụp ảnh CCCD / Hộ chiếu</div>
+              <div class="verify-subtitle">Chụp rõ 2 mặt giấy tờ</div>
+            </div>
+            <div class="verify-status" id="cccdStatus"></div>
+          </div>
+          <div class="upload-zone" id="cccdZone" onclick="simulateUpload('cccd')">
+            <div class="upload-icon">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <path d="M16 4V20M16 4L11 9M16 4L21 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M6 22V26C6 27.105 6.895 28 8 28H24C25.105 28 26 27.105 26 26V22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="upload-text">Nhấn để tải ảnh lên</div>
+            <div class="upload-hint">JPG, PNG • Tối đa 10MB</div>
+          </div>
+        </div>
+
+        <!-- Face verification -->
+        <div class="verify-card" id="faceCard">
+          <div class="verify-card-header">
+            <div class="verify-icon verify-icon--purple">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                <circle cx="14" cy="14" r="10" stroke="currentColor" stroke-width="1.8"/>
+                <circle cx="10.5" cy="12" r="1.5" fill="currentColor"/>
+                <circle cx="17.5" cy="12" r="1.5" fill="currentColor"/>
+                <path d="M10 18C10 18 11.5 20 14 20C16.5 20 18 18 18 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <div class="verify-title">Xác thực khuôn mặt</div>
+              <div class="verify-subtitle">Nhìn thẳng vào camera</div>
+            </div>
+            <div class="verify-status" id="faceStatus"></div>
+          </div>
+          <div class="upload-zone" id="faceZone" onclick="simulateUpload('face')">
+            <div class="upload-icon">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2"/>
+                <path d="M6 6L26 26M26 6L6 26" stroke="currentColor" stroke-width="0" />
+                <path d="M10 10C10 10 8 10 8 12V20C8 22 10 22 10 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M22 10C22 10 24 10 24 12V20C24 22 22 22 22 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="13" cy="14" r="1.5" fill="currentColor"/>
+                <circle cx="19" cy="14" r="1.5" fill="currentColor"/>
+                <path d="M12 20C12 20 13.5 22 16 22C18.5 22 20 20 20 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="upload-text">Nhấn để bật camera</div>
+            <div class="upload-hint">Đảm bảo ánh sáng đủ tốt</div>
+          </div>
+        </div>
+
+        <!-- Progress bar for verification -->
+        <div class="verify-progress">
+          <div class="verify-progress-fill" id="verifyProgress"></div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn--ghost" onclick="goToStep(3)">Quay lại</button>
+          <button class="btn btn--primary" id="verifyNextBtn" disabled onclick="goToStep(5)">
+            <span>Tiếp tục</span>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M7 4L12 9L7 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────────────
+         STEP 5: BỔ SUNG THÔNG TIN
+    ───────────────────────────────────────── -->
+    <section class="step-panel" id="step5">
+      <div class="card">
+        <div class="card-icon-header">
+          <div class="icon-badge icon-badge--teal">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2Z" stroke="white" stroke-width="2"/>
+              <circle cx="12" cy="9" r="2.5" stroke="white" stroke-width="1.5"/>
+            </svg>
+          </div>
+        </div>
+        <h2 class="card-title">Bổ sung thông tin</h2>
+        <p class="card-desc">Thêm thông tin để hoàn tất hồ sơ đăng ký.</p>
+
+        <div class="form-group">
+          <label class="form-label" for="address">Địa chỉ thường trú</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M9 2C6.24 2 4 4.24 4 7C4 11 9 16 9 16C9 16 14 11 14 7C14 4.24 11.76 2 9 2Z" stroke="currentColor" stroke-width="1.5"/>
+              <circle cx="9" cy="7" r="1.5" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+            <input type="text" id="address" class="form-input with-icon" placeholder="Số nhà, Đường, Quận, Thành phố" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="occupation">Nghề nghiệp</label>
+          <div class="input-wrapper select-wrapper">
+            <svg class="input-icon" width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <rect x="2" y="6" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M6 6V5C6 3.895 6.895 3 8 3H10C11.105 3 12 3.895 12 5V6" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+            <select id="occupation" class="form-input with-icon form-select">
+              <option value="">Chọn nghề nghiệp</option>
+              <option>Nhân viên văn phòng</option>
+              <option>Kinh doanh / Tự doanh</option>
+              <option>Kỹ sư / Công nghệ</option>
+              <option>Y tế / Giáo dục</option>
+              <option>Sinh viên</option>
+              <option>Khác</option>
+            </select>
+            <svg class="select-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Mục đích mở tài khoản</label>
+          <div class="purpose-grid">
+            <div class="purpose-chip" onclick="togglePurpose(this)">💸 Thanh toán hàng ngày</div>
+            <div class="purpose-chip" onclick="togglePurpose(this)">💰 Tiết kiệm</div>
+            <div class="purpose-chip" onclick="togglePurpose(this)">📈 Đầu tư</div>
+            <div class="purpose-chip" onclick="togglePurpose(this)">🌏 Chuyển tiền quốc tế</div>
+            <div class="purpose-chip" onclick="togglePurpose(this)">🏢 Kinh doanh</div>
+            <div class="purpose-chip" onclick="togglePurpose(this)">🎓 Học phí / Sinh hoạt</div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn--ghost" onclick="goToStep(4)">Quay lại</button>
+          <button class="btn btn--primary" onclick="submitForm()">
+            <span>Gửi đăng ký</span>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M3 9L15 9M10 4L15 9L10 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────────────
+         SUCCESS SCREEN
+    ───────────────────────────────────────── -->
+    <section class="step-panel" id="stepSuccess">
+      <div class="card card--success">
+        <div class="success-animation">
+          <div class="success-ring success-ring--outer"></div>
+          <div class="success-ring success-ring--middle"></div>
+          <div class="success-checkmark">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+              <path class="check-path" d="M10 20L17 27L30 13" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+
+        <h2 class="success-title">Hoàn tất đăng ký!</h2>
+        <p class="success-desc">Tài khoản của bạn đã được tạo thành công. Chúng tôi sẽ xem xét và kích hoạt trong vòng <strong>24 giờ</strong>.</p>
+
+        <div class="success-info-box">
+          <div class="info-row">
+            <span class="info-key">Mã hồ sơ</span>
+            <span class="info-val">#NEO-<span id="refCode">2024XXXX</span></span>
+          </div>
+          <div class="info-row">
+            <span class="info-key">Trạng thái</span>
+            <span class="info-val status-pending">⏳ Đang xử lý</span>
+          </div>
+          <div class="info-row">
+            <span class="info-key">Thông báo qua</span>
+            <span class="info-val" id="successEmail">email@example.com</span>
+          </div>
+        </div>
+
+        <div class="btn-stack">
+          <button class="btn btn--primary" onclick="goHome()">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M3 9L9 3L15 9M5 7V15H13V7" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Về trang chủ</span>
+          </button>
+          <button class="btn btn--outline" onclick="goLogin()">
+            <span>Đăng nhập ngay</span>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M7 4L12 9L7 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════
+       MODAL — ĐIỀU KHOẢN & ĐIỀU KIỆN
+  ═══════════════════════════════════════════ -->
+  <div class="modal-overlay" id="termsModal" onclick="closeModalOutside(event)">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title-row">
+          <div class="modal-icon">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <rect x="3" y="2" width="14" height="16" rx="2" stroke="white" stroke-width="1.5"/>
+              <path d="M7 7H13M7 10H13M7 13H10" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>Điều khoản & Điều kiện</h3>
+        </div>
+        <button class="modal-close" onclick="closeModal()">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M4 4L14 14M14 4L4 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-section">
+          <h4>1. Giới thiệu</h4>
+          <p>Chào mừng bạn đến với NeoBank — nền tảng ngân hàng số hàng đầu Việt Nam. Bằng việc đăng ký và sử dụng dịch vụ, bạn đồng ý bị ràng buộc bởi các điều khoản và điều kiện dưới đây. Vui lòng đọc kỹ trước khi tiếp tục.</p>
+        </div>
+        <div class="modal-section">
+          <h4>2. Thu thập và xử lý dữ liệu cá nhân</h4>
+          <p>NeoBank thu thập thông tin cá nhân bao gồm: họ tên, ngày sinh, số điện thoại, địa chỉ email, thông tin giấy tờ tùy thân (CMND/CCCD/Hộ chiếu) và địa chỉ thường trú. Thông tin này được sử dụng để:</p>
+          <ul>
+            <li>Xác minh danh tính và phòng chống gian lận</li>
+            <li>Cung cấp dịch vụ tài chính và ngân hàng</li>
+            <li>Tuân thủ quy định pháp luật và nghĩa vụ báo cáo</li>
+            <li>Cải thiện trải nghiệm sử dụng dịch vụ</li>
+            <li>Gửi thông báo giao dịch và cập nhật dịch vụ</li>
+          </ul>
+        </div>
+        <div class="modal-section">
+          <h4>3. Bảo mật thông tin</h4>
+          <p>NeoBank áp dụng các biện pháp bảo mật kỹ thuật và tổ chức phù hợp để bảo vệ dữ liệu cá nhân của bạn, bao gồm mã hóa AES-256, xác thực đa yếu tố và kiểm soát truy cập nghiêm ngặt. Chúng tôi cam kết không bán hoặc tiết lộ thông tin của bạn cho bên thứ ba khi chưa có sự đồng ý, trừ khi được pháp luật yêu cầu.</p>
+        </div>
+        <div class="modal-section">
+          <h4>4. Quyền của bạn</h4>
+          <p>Theo Nghị định 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân, bạn có quyền:</p>
+          <ul>
+            <li>Truy cập và nhận bản sao dữ liệu cá nhân của mình</li>
+            <li>Chỉnh sửa thông tin không chính xác</li>
+            <li>Xóa dữ liệu trong một số trường hợp nhất định</li>
+            <li>Phản đối hoặc hạn chế việc xử lý dữ liệu</li>
+            <li>Rút lại sự đồng ý bất cứ lúc nào</li>
+          </ul>
+        </div>
+        <div class="modal-section">
+          <h4>5. Cookies và công nghệ theo dõi</h4>
+          <p>Ứng dụng NeoBank sử dụng cookies và các công nghệ tương tự để cải thiện hiệu suất, cá nhân hóa trải nghiệm và phân tích việc sử dụng dịch vụ. Bạn có thể kiểm soát việc sử dụng cookies thông qua cài đặt thiết bị.</p>
+        </div>
+        <div class="modal-section">
+          <h4>6. Thay đổi điều khoản</h4>
+          <p>NeoBank có thể cập nhật các điều khoản này theo thời gian. Mọi thay đổi quan trọng sẽ được thông báo trước ít nhất 30 ngày qua email đăng ký. Việc tiếp tục sử dụng dịch vụ sau ngày thay đổi có hiệu lực được xem là sự chấp thuận của bạn.</p>
+        </div>
+        <div class="modal-section">
+          <h4>7. Liên hệ</h4>
+          <p>Mọi thắc mắc về điều khoản hoặc quyền riêng tư, vui lòng liên hệ: <strong>privacy@neobank.vn</strong> hoặc gọi <strong>1800 6888</strong> (miễn phí, 24/7).</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="modal-update">Cập nhật lần cuối: 01/01/2025</span>
+        <button class="btn btn--primary btn--sm" onclick="closeModal()">Đã hiểu</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       TOAST NOTIFICATION
+  ═══════════════════════════════════════════ -->
+  <div class="toast" id="toast">
+    <div class="toast-icon" id="toastIcon"></div>
+    <span id="toastMsg"></span>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
