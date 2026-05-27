@@ -102,7 +102,7 @@ async function submitForm() {
           phone_number: '0' + state.formData.phone,
           email: state.formData.email,
           source_id: sourceId,
-          service_source_id: "75998364686415412",
+          service_source_id: "75998365358979361",
           type: "Cá nhân",
           status: "1",
           address: "",
@@ -127,7 +127,7 @@ async function submitForm() {
 
     // 2. Tạo Payload Consent gửi đến hệ thống quản lý đồng ý dữ liệu
     const payload = {
-      campaign_name: "Lấy sự đồng ý sử dụng dữ liệu khách hàng VietBank" + purposeString,
+      campaign_name: "Thu thập sự đồng ý của khách hàng khi mở tài khoản",
       datas: [
         {
           subject_source_id: sourceId,
@@ -135,7 +135,7 @@ async function submitForm() {
           subject_phone: '0' + state.formData.phone,
           subject_email: state.formData.email,
           consent_source_id: Date.now(),
-          service_source_id: "75998365289590102",
+          service_source_id: "75998365358979361",
           create_time: Date.now()-1000, // Giả lập thời gian tạo trước khi gửi
           consent_status: "agree_all",
           assignees: []
@@ -145,7 +145,7 @@ async function submitForm() {
         system_name: "VietBank Digital Web",
         channel_name: "web_form"
       },
-      campaign_source_id: "3f72be8d-6d6c-4cc6-9c5f-b8b569dddf17",
+      campaign_source_id: "074fceaa-0ac9-4a09-8ee3-0bf31ed78e0a",
       consent_type: "consent_right_to_know",
       subject_type: "service"
     };
