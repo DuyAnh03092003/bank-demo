@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0757a6">
+    <title>Quản lý sự đồng ý | EXIMBANK</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <div class="utility">
+        <div class="wrap">
+            <div class="utility-left"><a href="#services">⌖ &nbsp;Mạng lưới &amp; ATM</a><a href="#rates">▥ &nbsp;Tỷ
+                    giá</a><a href="#rates">％ &nbsp;Lãi suất</a><a href="#news">◉ &nbsp;Tin tức</a></div>
+            <div class="utility-right"><a href="tel:19006655">☎ &nbsp;1900 6655</a><a href="#">◎ &nbsp;Tiếng Việt⌄</a>
+            </div>
+        </div>
+    </div>
+    <header class="nav">
+        <div class="wrap">
+            <a class="brand" href="index.html" aria-label="EXIMBANK Trang chủ"><svg viewBox="0 0 48 48" role="img"
+                    aria-label="Biểu tượng EXIMBANK">
+                    <circle cx="24" cy="24" r="21" fill="#fff" stroke="#0786c8" stroke-width="3" />
+                    <path d="M24 3v42M3 24h42" stroke="#0786c8" stroke-width="2" />
+                    <path d="M24 5a19 19 0 0 1 19 19H24z" fill="#008ed1" />
+                    <path d="M5 24A19 19 0 0 1 24 5v19z" fill="#e8f8ff" />
+                    <path d="M24 43A19 19 0 0 1 5 24h19z" fill="#0757a6" />
+                    <path d="M43 24a19 19 0 0 1-19 19V24z" fill="#1eb8e6" />
+                </svg><span class="brand-word">EXIMBANK</span></a>
+            <nav class="nav-links" id="navLinks" aria-label="Điều hướng chính">
+                <div class="nav-item"><a href="digital.html">Ngân hàng số</a></div>
+                <div class="nav-item has-dropdown"><button type="button" aria-haspopup="true">Hỗ trợ</button>
+                    <div class="dropdown-menu"> <a href="privacy.html">Chính sách</a>
+                    </div>
+                </div>
+            </nav>
+            <div class="nav-actions"><a class="login" href="account.html">Mở tài khoản</a><button class="menu-btn"
+                    id="menuBtn" aria-label="Mở menu">☰</button></div>
+        </div>
+    </header>
+    <main class="page-view">
+        <div class="wrap-main">
+            <div class="page-title">
+                <h1>Quản lý sự đồng ý</h1>
+                <p id="customerSummary"></p>
+            </div>
+            <section class="panel"><button class="btn btn-line" id="refreshConsents">Cập nhật thông tin</button>
+                <button type="button" class="btn btn-blue" id="openWithdrawal" disabled>
+                    Rút lại sự đồng ý
+                </button>
+                <p id="consentMessage" class="api-message" role="status"></p>
+                <div id="consentList"></div>
+            </section>
+        </div>
+    </main>
+    <footer class="footer" id="eximFooter">
+        <div class="footer-inner">
+            <div>
+                <div class="footer-brand">EXIMBANK</div>
+                <p>Ngân hàng TMCP Xuất Nhập khẩu Việt Nam</p>
+            </div>
+            <div>Hotline 24/7: <strong>1900 6655</strong><br>© Eximbank</div>
+            <div><a href="privacy.html">Quyền riêng tư</a>　|　 </div>
+        </div>
+    </footer>
+    <div id="toast" class="toast hidden" role="status"></div>
+    <script src="js/config.js" defer></script>
+    <script src="js/datatrust.js" defer></script>
+    <script src="js/app.js" defer></script>
+    <script src="js/account-flows.js" defer></script>
+</body>
+
+</html>
