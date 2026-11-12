@@ -750,8 +750,26 @@
           for (const purpose of productPurposes) {
             count++;
             const row = document.createElement('article'); row.className = 'consent-record';
-            const title = document.createElement('strong'); title.className = 'consent-record-title';
-            title.textContent = purpose.purpose_name || purposeNames[String(purpose.purpose_id)] || 'Mục đích xử lý dữ liệu';
+            const isRequired = Object.values(C.CONSENTS).some(group =>
+              Object.values(group.checkboxes).some(config =>
+                config.required &&
+                config.purposes.includes(purposeId)
+              )
+            );
+
+            const purposeName =
+              purpose.purpose_name ||
+              purposeNames[purposeId] ||
+              'Mục đích xử lý dữ liệu';
+
+            title.textContent = purposeName;
+
+            if (isRequired) {
+              const requiredLabel = document.createElement('span');
+              requiredLabel.className = 'consent-required-label';
+              requiredLabel.textContent = '(Bắt buộc)';
+              title.appendChild(requiredLabel);
+            }
             const status = document.createElement('span'); status.className = 'consent-status';
             const active = purpose.status === 'agreed' && D.validPurpose(purpose);
             row.dataset.consentState = active ? 'active' : 'inactive';
