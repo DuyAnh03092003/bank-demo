@@ -577,6 +577,7 @@
         const label = document.createElement('label'); label.className = 'consent-option';
         const master = document.createElement('input'); master.type = 'checkbox';
         master.checked = config.purposes.every(id => D.validPurpose(statusById.get(String(id))));
+        master.disabled = master.checked;
         requiredControls.push(master);
         const description = document.createElement('span');
         description.textContent = `${config.label} (Đồng ý toàn bộ ${config.purposes.length} mục đích)`;
