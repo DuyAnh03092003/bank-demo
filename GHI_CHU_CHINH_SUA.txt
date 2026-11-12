@@ -1,0 +1,26 @@
+BẢN CHỈNH SỬA WEBSITE POC EXIMBANK – 12/11/2026
+
+1. MỞ TÀI KHOẢN
+- Giữ giao diện Dịch vụ ngân hàng, ô chọn bắt buộc và không bắt buộc.
+- Hai nhóm dịch vụ ngân hàng có Xem chi tiết/Thu gọn; nhóm bắt buộc chọn tất cả,
+  nhóm không bắt buộc chọn từng mục đích hoặc toàn bộ.
+- Không hiển thị mã PUR_ trên giao diện.
+- Liên kết tài khoản chỉ hiển thị tên mục đích "Liên kết và sử dụng dịch vụ đối tác",
+  một checkbox, không có Xem chi tiết.
+- Popup chính sách mở privacy.html.
+
+2. QUẢN LÝ SỰ ĐỒNG Ý
+- Tập hợp danh sách mục đích theo sản phẩm/dịch vụ, đóng/mở từng sản phẩm.
+- Trạng thái và thời hạn cho từng mục đích; không hiển thị mã purpose.
+- Xin lại sự đồng ý chia theo sản phẩm; giữ nguyên cách gửi API và chức năng rút lại.
+
+3. THANH TOÁN / LIÊN KẾT VÍ
+- Popup Eximbank Banking Authorization, một mục đích, không checkbox, xem chính sách,
+  Hủy/Đồng ý và liên kết.
+- Popup kết quả: Thanh toán thành công!/Thanh toán thất bại!; đóng sau 5 giây.
+
+GIỮ NGUYÊN: js/config.js (URL API, workspace, token, ID, endpoint), js/datatrust.js,
+logic API hiện có. Các luồng được thiết kế cho POC, không phải cổng thanh toán thật.
+
+KIỂM THỬ CẦN LÀM: luồng mở tài khoản, tra cứu/rút lại/xin lại với API DataTrust,
+liên kết ví mới/hết hạn, trạng thái thanh toán, responsive.

@@ -42,16 +42,13 @@
     </header>
     <main class="page-view">
         <div class="wrap-main">
-            <div class="page-title">
-                <h1>Quản lý sự đồng ý</h1>
-                <p id="customerSummary"></p>
-            </div>
-            <section class="panel"><button class="btn btn-line" id="refreshConsents">Cập nhật thông tin</button>
-                <button type="button" class="btn btn-blue" id="openWithdrawal" disabled>
-                    Rút lại sự đồng ý
-                </button>
+            <section class="consent-dashboard panel" aria-label="Quản lý sự đồng ý">
+                <div class="consent-dashboard-brand"><div><strong>EXIMBANK</strong><small>NGÂN HÀNG SỐ</small></div><span class="consent-shield" aria-hidden="true">♢</span></div>
+                <div class="consent-dashboard-intro"><h1>Quản lý sự đồng ý</h1><p>Tra cứu các mục đích xử lý dữ liệu cá nhân và quản lý lựa chọn của bạn.</p></div>
+                <div class="consent-customer-card" id="customerCard"><span class="customer-avatar" aria-hidden="true">♙</span><div><strong id="customerName">Thông tin khách hàng</strong><small id="customerSummary"></small></div></div>
+                <div class="consent-toolbar"><div class="consent-filters" role="group" aria-label="Lọc trạng thái sự đồng ý"><button type="button" class="consent-filter is-active" data-consent-filter="all" aria-pressed="true">Tất cả</button><button type="button" class="consent-filter" data-consent-filter="active" aria-pressed="false">Còn hiệu lực</button><button type="button" class="consent-filter" data-consent-filter="inactive" aria-pressed="false">Không hiệu lực</button></div><button class="consent-refresh" id="refreshConsents" type="button">↻ Cập nhật thông tin</button></div>
                 <p id="consentMessage" class="api-message" role="status"></p>
-                <div id="consentList"></div>
+                <div id="consentList" class="consent-products-list"></div>
             </section>
         </div>
     </main>

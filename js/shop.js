@@ -12,6 +12,17 @@
   ];
   let cart = {}; let currentCategory = 'all';
   const $ = (id) => document.getElementById(id);
+  let paymentResultTimer;
+  window.showPaymentResult = (success, detail = '') => {
+    const dialog=$('paymentResultDialog'); if(!dialog)return;
+    clearTimeout(paymentResultTimer);
+    $('paymentResultTitle').textContent=success?'Thanh toán thành công!':'Thanh toán thất bại!';
+    $('paymentResultSymbol').textContent=success?'✓':'×';
+    $('paymentResultSymbol').className='payment-result-symbol '+(success?'success':'failure');
+    $('paymentResultDescription').textContent=detail || (success?'Giao dịch đã được xử lý.':'Giao dịch chưa được hoàn tất.');
+    if(!dialog.open)dialog.showModal();
+    paymentResultTimer=setTimeout(()=>{if(dialog.open)dialog.close()},5000);
+  };
   const money = (value) => new Intl.NumberFormat('vi-VN').format(value) + ' ₫';
   const renderProducts = () => {
     const query = ($('shopSearch').value || '').trim().toLowerCase();
@@ -49,7 +60,7 @@
     if (!Object.keys(cart).length) { window.showToast('Vui lòng thêm sản phẩm vào giỏ hàng trước.'); return; }
     const method = document.querySelector('input[name="pay"]:checked').value; $('cartOverlay').classList.add('hidden');
     if (method === 'shopeepay') { $('walletPage').classList.remove('hidden'); document.title = 'ShopeePay | Liên kết ví'; }
-    else window.showToast('Đã ghi nhận phương thức thanh toán Eximbank.');
+    else window.showPaymentResult(true, 'Thanh toán qua tài khoản Eximbank được mô phỏng trong POC.');
   });
   $('walletBack').addEventListener('click', closeWallet); $('walletCancel').addEventListener('click', closeWallet);
   renderProducts(); updateCart();

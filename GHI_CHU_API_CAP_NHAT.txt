@@ -1,0 +1,31 @@
+BẢN CẬP NHẬT API CONSENT / IRM - POC EXIMBANK
+
+1. Cập nhật sự đồng ý:
+- Từng sản phẩm có nút Cập nhật sự đồng ý.
+- Sử dụng D.payload và D.submit, cùng API của luồng Mở tài khoản.
+- Gửi đầy đủ các mục đích thuộc sản phẩm, giữ agreed hợp lệ; mục đích được chọn mới gửi agreed; mục đích khác gửi rejected.
+
+2. Rút lại Dịch vụ ngân hàng:
+- Nút Rút lại sự đồng ý tại sản phẩm Dịch vụ ngân hàng.
+- Giới hạn 5 purpose không bắt buộc PUR_00005, 00007, 00008, 00009, 00010.
+- Sử dụng mẫu IRM/ngân hàng hiện có, cho phép chọn purpose và trường dữ liệu.
+
+3. Rút lại Liên kết tài khoản:
+- Nút Rút lại sự đồng ý tại sản phẩm Liên kết tài khoản.
+- Mục đích: Liên kết và sử dụng dịch vụ đối tác (PUR_00011).
+- IRM form: /irm/request/621861/ecd7/217716bc-ecd7-45bc-a5b0-46108584db0f
+- service field: serviceId-75998382781554004; value: Liên kết dịch vụ thanh toán
+- purpose answer_id: 81064932362405205
+- Trường dữ liệu: Email, Số điện thoại.
+- Popup không yêu cầu tick mục đích; chỉ cần Xác nhận rút lại.
+- Có mô tả việc hủy liên kết được thực hiện sau thời gian xử lý; không thêm logic hủy ví.
+
+4. Giữ nguyên:
+- js/config.js và js/datatrust.js, bao gồm token/API/endpoint/mã định danh.
+- Luồng kiểm tra consent trước khi liên kết ví và thanh toán.
+
+5. Kiểm thử cần thực hiện trên môi trường thật:
+- Tài khoản có các mục đích trong đúng sản phẩm; kiểm tra dữ liệu phản hồi GET.
+- Gửi IRM liên kết ví thành công khi cùng origin hoặc máy chủ cho phép CORS.
+- Kiểm tra hồ sơ IRM và thay đổi trạng thái DataTrust sau khi xử lý; HTTP 2xx không đồng nghĩa trạng thái consent đã đổi.
+- Thử cập nhật cả 2 sản phẩm, đối chiếu danh sách purpose theo API.

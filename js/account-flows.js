@@ -1,19 +1,131 @@
 (() => {
   const $ = id => document.getElementById(id), D = window.DT, C = window.POC_CONFIG;
   const message = (id, text) => { if ($(id)) $(id).textContent = text; };
-  function boxes(target, types, prefix) {
-    for (const type of types) {
-      const group = C.CONSENTS[type], section = document.createElement('section'); section.className = 'consent-box';
-      const heading = document.createElement('h2'); heading.textContent = group.label; section.append(heading);
-      for (const [key, config] of Object.entries(group.checkboxes)) {
-        const label = document.createElement('label'); label.className = 'consent-option';
-        const input = document.createElement('input'); input.type = 'checkbox'; input.id = prefix + key; input.dataset.consentType = type; input.dataset.consentKey = key; input.required = config.required;
-        const span = document.createElement('span'); span.textContent = config.label + (config.required ? ' (Bắt buộc)' : ' (Không bắt buộc)'); label.append(input, span); section.append(label);
-      }
+  // UI-only labels transcribed from the purpose list shown in DataTrust.
+  // The identifiers, checkbox definitions and API mapping remain in js/config.js.
+  const purposeNames = {
+    PUR_00000: 'Định danh và xác thực khách hàng',
+    PUR_00001: 'Đăng ký và quản lý dịch vụ ngân hàng số',
+    PUR_00002: 'Thực hiện giao dịch ngân hàng',
+    PUR_00003: 'Bảo đảm an toàn và phòng chống gian lận',
+    PUR_00004: 'Hỗ trợ khách hàng và giải quyết tra soát',
+    PUR_00005: 'Gửi thông báo dịch vụ',
+    PUR_00007: 'Đánh giá và cung cấp tín dụng',
+    PUR_00008: 'Phân tích và cải thiện dịch vụ',
+    PUR_00009: 'Cá nhân hóa trải nghiệm',
+    PUR_00010: 'Tiếp thị và giới thiệu sản phẩm',
+    PUR_00011: 'Liên kết và sử dụng dịch vụ đối tác'
+  };
+  function registrationConsents(target) {
+    // Preserve the existing product/service cards and their original checkbox labels.
+    Object.entries(C.CONSENTS).forEach(([type, group]) => {
+      const section = document.createElement('section');
+      section.className = 'registration-consent-group';
+      const title = document.createElement('h3');
+      title.textContent = group.label;
+      section.append(title);
+
+      Object.entries(group.checkboxes).forEach(([key, box]) => {
+        const row = document.createElement('div');
+        row.className = 'registration-consent-row';
+        const heading = document.createElement('div');
+        heading.className = 'registration-consent-heading';
+        const master = document.createElement('input');
+        master.type = 'checkbox';
+        master.className = 'registration-consent-master';
+        master.id = `register-${type}-${key}`;
+        master.required = !!box.required;
+        const label = document.createElement('label');
+        label.htmlFor = master.id;
+        const singleWalletPurpose = type === 'account_link' && box.purposes.length === 1;
+        label.textContent = singleWalletPurpose
+          ? `${purposeNames[box.purposes[0]] || box.label} (Không bắt buộc)`
+          : `${box.label} (${box.required ? 'Bắt buộc' : 'Không bắt buộc'})`;
+        const toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'registration-consent-toggle';
+        toggle.textContent = 'Xem chi tiết ▾';
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', `Xem các mục đích: ${box.label}`);
+        heading.append(master, label);
+        if (!singleWalletPurpose) heading.append(toggle);
+        row.append(heading);
+
+        const details = document.createElement('div');
+        details.className = 'registration-consent-details hidden';
+        const inputs = [];
+        box.purposes.forEach(id => {
+          const item = document.createElement('label');
+          item.className = 'registration-consent-purpose';
+          const input = document.createElement('input');
+          input.type = 'checkbox';
+          input.dataset.purposeId = id;
+          input.dataset.consentType = type;
+          input.dataset.consentKey = key;
+          if (box.required) {
+            input.disabled = true;
+            item.classList.add('readonly');
+          }
+          const description = document.createElement('span');
+          const name = document.createElement('strong');
+          name.textContent = purposeNames[id] || `Mục đích ${id}`;
+          description.append(name);
+          item.append(input, description);
+          details.append(item);
+          inputs.push(input);
+        });
+        const summary = document.createElement('small');
+        summary.className = 'registration-consent-count';
+        if (!singleWalletPurpose) heading.insertAdjacentElement('afterend', summary);
+        const update = () => {
+          const checked = inputs.filter(input => input.checked).length;
+          master.checked = !!inputs.length && checked === inputs.length;
+          master.indeterminate = !box.required && checked > 0 && checked < inputs.length;
+          summary.textContent = `${checked}/${inputs.length} mục đích đã chọn`;
+          target.dispatchEvent(new Event('consent-change', { bubbles: true }));
+        };
+        master.addEventListener('change', () => {
+          inputs.forEach(input => { input.checked = master.checked; });
+          update();
+        });
+        inputs.forEach(input => input.addEventListener('change', update));
+        if (!singleWalletPurpose) {
+          toggle.addEventListener('click', () => {
+            const expanded = details.classList.toggle('hidden') === false;
+            toggle.textContent = expanded ? 'Thu gọn ▴' : 'Xem chi tiết ▾';
+            toggle.setAttribute('aria-expanded', String(expanded));
+          });
+          row.append(details);
+        } else {
+          // Checkbox chính giữ data-purpose-id qua input ẩn trong DOM để không đổi payload.
+          details.classList.add('registration-consent-data-only');
+          details.hidden = true;
+          row.append(details);
+        }
+        section.append(row);
+        update();
+      });
       target.append(section);
-    }
+    });
+    const policy = document.createElement('p'); policy.className = 'consent-policy-copy';
+    policy.append('Vui lòng đọc ');
+    const link = document.createElement('button'); link.type = 'button'; link.className = 'text-link'; link.textContent = 'Chính sách xử lý dữ liệu cá nhân';
+    link.onclick = () => openPolicyDialog(); policy.append(link, ' trước khi tiếp tục.'); target.append(policy);
   }
-  const choices = type => Object.fromEntries([...document.querySelectorAll(`#accountConsents input[data-consent-type="${type}"]`)].map(el => [el.dataset.consentKey, el.checked]));
+  function openPolicyDialog() {
+    if (document.getElementById('pocPolicyDialog')) return;
+    const dialog = document.createElement('dialog'); dialog.id = 'pocPolicyDialog'; dialog.className = 'poc-dialog policy-dialog';
+    const header = document.createElement('div'); header.className = 'dialog-head';
+    const title = document.createElement('h2'); title.textContent = 'Chính sách xử lý dữ liệu cá nhân';
+    const close = document.createElement('button'); close.type = 'button'; close.textContent = '×'; close.className = 'close'; close.setAttribute('aria-label', 'Đóng');
+    header.append(title, close);
+    const frame = document.createElement('iframe'); frame.title = 'Chính sách xử lý dữ liệu cá nhân'; frame.src = 'https://irm-demo.datatrust.one/irm/policy-version/621861/81346406974458224/vi'; frame.className = 'policy-frame';
+    dialog.append(header, frame); document.body.append(dialog);
+    close.onclick = () => dialog.close(); dialog.addEventListener('close', () => dialog.remove()); dialog.showModal();
+  }
+  const choices = type => Object.fromEntries(Object.entries(C.CONSENTS[type].checkboxes).map(([key, box]) => [key,
+    box.purposes.every(id => !!document.querySelector(`#accountConsents input[data-purpose-id="${id}"]:checked`))]));
+  const purposeChoices = () => Object.fromEntries([...document.querySelectorAll('#accountConsents input[data-purpose-id]')].map(el => [el.dataset.purposeId, el.checked]));
   const current = D.session();
   document.querySelectorAll('a[href="account.html"]').forEach(el => el.classList.toggle('hidden', !!current));
   const nav = document.querySelector('.nav-actions');
@@ -49,10 +161,10 @@
     });
   }
   if ($('registerForm')) {
-    boxes($('accountConsents'), ['bank_service', 'account_link'], 'register_');
+    registrationConsents($('accountConsents'));
     const form = $('registerForm'), next = $('accountContinue'), confirm = $('confirmAccount');
     let draft = null, submitted = new Set(), inFlight = false;
-    const refresh = () => { next.disabled = [...form.querySelectorAll('input[type=checkbox][required]')].some(x => !x.checked); }; form.addEventListener('change', refresh); refresh();
+    const refresh = () => { next.disabled = [...form.querySelectorAll('input[type=checkbox][required]')].some(x => !x.checked); }; form.addEventListener('change', refresh); form.addEventListener('consent-change', refresh); refresh();
     const today = new Date(); $('dob').max = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
     form.addEventListener('submit', async e => {
       e.preventDefault(); if (inFlight || !form.reportValidity()) return; inFlight = true; next.disabled = true;
@@ -72,15 +184,15 @@
           bodies: Object.fromEntries(
             ['bank_service', 'account_link'].map(type => [
               type,
-              D.payload(type, subject, code, choices(type))
+              D.payload(type, subject, code, choices(type), 'ACCOUNT_REGISTRATION', purposeChoices())
             ])
           )
         };
         submitted.clear();
         Object.entries(fields).forEach(([key, value]) => $('review' + key).textContent = value);
         message('reviewRequiredConsent', '✓ Đồng ý xử lý thông tin để cung cấp dịch vụ ngân hàng.');
-        message('reviewOffersConsent', choices('bank_service').offers ? '✓ Đồng ý nhận thông tin ưu đãi.' : 'Không đồng ý nhận thông tin ưu đãi.');
-        message('reviewLinkConsent', choices('account_link').wallet_link ? '✓ Đồng ý sử dụng thông tin cho liên kết tài khoản.' : 'Không đồng ý sử dụng thông tin cho liên kết tài khoản.');
+        message('reviewOffersConsent', `Nhóm không bắt buộc: ${Object.entries(purposeChoices()).filter(([id, selected]) => selected && !C.CONSENTS.bank_service.checkboxes.account_service.purposes.includes(id)).length} mục đích đã chọn.`);
+        message('reviewLinkConsent', choices('account_link').wallet_link ? '✓ Đã chọn mục đích liên kết tài khoản.' : 'Chưa chọn mục đích liên kết tài khoản.');
         message('registerMessage', '');
         message(
           'registrationStatus',
@@ -116,10 +228,13 @@
     PUR_00010: '81064932362222568'
   };
 
+  const walletWithdrawalPurpose = { purposeId: 'PUR_00011', withdrawalId: '81064932362405205', name: 'Liên kết và sử dụng dịch vụ đối tác' };
+
   const withdrawalFormUrl =
     'https://irm-demo.datatrust.one/irm/request/621861/ecd7/217716bc-ecd7-45bc-a5b0-46108584db0f';
 
-  function openWithdrawalForm(eligiblePurposes, subject) {
+  function openWithdrawalForm(eligiblePurposes, subject, type) {
+    const isWallet = type === 'account_link';
     if (!eligiblePurposes.length) return;
 
     if (document.getElementById('withdrawalDialog')) return;
@@ -176,6 +291,19 @@
     </form>
   `;
 
+    if (isWallet) {
+      // A single wallet-link purpose needs no separate selection checkbox.
+      const purposeFieldset = dialog.querySelector('[data-purposes]').closest('fieldset');
+      purposeFieldset.querySelector('legend').textContent = 'Mục đích rút lại sự đồng ý';
+      const fieldsFieldset = dialog.querySelector('input[name="field"]').closest('fieldset');
+      fieldsFieldset.remove();
+      const note = document.createElement('p');
+      note.className = 'withdrawal-wallet-note';
+      note.textContent = 'Lưu ý: Sau khi rút lại sự đồng ý, việc hủy liên kết tài khoản với ví điện tử sẽ được thực hiện sau một khoảng thời gian xử lý theo quy trình của ngân hàng.';
+      purposeFieldset.insertAdjacentElement('afterend', note);
+      dialog.querySelector('[data-send]').textContent = 'Xác nhận rút lại';
+    }
+
     const form = dialog.querySelector('form');
     const send = dialog.querySelector('[data-send]');
     const close = dialog.querySelector('[data-close]');
@@ -189,19 +317,23 @@
       `${subject.subject_name || ''} · Số tài khoản: ${current.pnr}`;
 
     for (const purpose of eligiblePurposes) {
-      const label = document.createElement('label');
-      label.className = 'consent-option';
-
-      const input = document.createElement('input');
-      input.type = 'checkbox';
-      input.name = 'purpose';
-      input.value = purpose.withdrawalId;
-
-      const text = document.createElement('span');
-      text.textContent = purpose.purpose_name || purpose.purpose_id;
-
-      label.append(input, text);
-      options.append(label);
+      if (isWallet) {
+        const text = document.createElement('strong');
+        text.className = 'withdrawal-wallet-purpose';
+        text.textContent = walletWithdrawalPurpose.name;
+        options.append(text);
+      } else {
+        const label = document.createElement('label');
+        label.className = 'consent-option';
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.name = 'purpose';
+        input.value = purpose.withdrawalId;
+        const text = document.createElement('span');
+        text.textContent = purpose.purpose_name || purposeNames[String(purpose.purpose_id)] || purpose.purpose_id;
+        label.append(input, text);
+        options.append(label);
+      }
     }
 
     const checkedValues = name =>
@@ -212,8 +344,8 @@
       send.disabled =
         busy ||
         sent ||
-        checkedValues('purpose').length === 0 ||
-        checkedValues('field').length === 0;
+        (!isWallet && (checkedValues('purpose').length === 0 ||
+          checkedValues('field').length === 0));
     };
 
     form.addEventListener('change', refresh);
@@ -232,11 +364,9 @@
       event.preventDefault();
       if (busy || sent) return;
 
-      const selectedIds = checkedValues('purpose');
-      const fields = checkedValues('field');
-      const selected = eligiblePurposes.filter(
-        item => selectedIds.includes(item.withdrawalId)
-      );
+      const selectedIds = isWallet ? [walletWithdrawalPurpose.withdrawalId] : checkedValues('purpose');
+      const fields = isWallet ? ['Email', 'Số điện thoại'] : checkedValues('field');
+      const selected = eligiblePurposes.filter(item => selectedIds.includes(item.withdrawalId));
 
       if (!selected.length || !fields.length) return;
 
@@ -282,7 +412,7 @@
         if (
           !freshSubject.subject_name ||
           !freshSubject.subject_email ||
-          selected.some(item => !item.purpose_name)
+          selected.some(item => !item.purpose_name && !isWallet)
         ) {
           throw Error('Thiếu họ tên, email hoặc tên mục đích để gửi yêu cầu.');
         }
@@ -315,10 +445,10 @@
               answer: freshSubject.subject_email
             },
             {
-              id: 'serviceId-75998382764827834',
+              id: isWallet ? 'serviceId-75998382781554004' : 'serviceId-75998382764827834',
               title: 'Sản phẩm/Dịch vụ',
               type: 5,
-              answer: 'Ngân hàng số'
+              answer: isWallet ? 'Liên kết dịch vụ thanh toán' : 'Ngân hàng số'
             },
             {
               id: 'appId-72620599152941602',
@@ -330,7 +460,7 @@
               id: 'cb-withdraw-purpose-1794279336151',
               title: 'Mục đích xử lý cần rút lại sự đồng ý',
               type: 3,
-              answer: selected.map(item => item.purpose_name),
+              answer: selected.map(item => isWallet ? walletWithdrawalPurpose.name : (item.purpose_name || purposeNames[String(item.purpose_id)])),
               answer_id: selected.map(item => item.withdrawalId)
             },
             {
@@ -356,7 +486,7 @@
         timer = setTimeout(() => controller.abort(), 20000);
 
         const response = await fetch(
-          C.WITHDRAWAL_URL || withdrawalFormUrl,
+          isWallet ? withdrawalFormUrl : (C.WITHDRAWAL_URL || withdrawalFormUrl),
           {
             method: 'POST',
             headers: { Accept: 'application/json' },
@@ -407,109 +537,280 @@
     });
 
     document.body.append(dialog);
+    refresh();
+    dialog.showModal();
+  }
+
+  function openProductConsentDialog(type, subject, reload) {
+    if (document.getElementById('reconsentDialog')) return;
+    const group = C.CONSENTS[type];
+    if (!group) return;
+    const purposes = (subject.consents || []).flatMap(c => c.purposes || []);
+    const configuredIds = D.ids(type).map(String);
+    const statusById = new Map();
+    for (const id of configuredIds) {
+      const matches = purposes.filter(p => String(p.purpose_id) === id);
+      if (matches.length !== 1) {
+        message('consentMessage', `Không xác định được trạng thái đầy đủ của sản phẩm ${group.label}. Vui lòng cập nhật thông tin.`);
+        return;
+      }
+      statusById.set(id, matches[0]);
+    }
+    const dialog = document.createElement('dialog');
+    dialog.id = 'reconsentDialog';
+    dialog.className = 'poc-dialog reconsent-dialog';
+    const heading = document.createElement('h2');
+    heading.textContent = `Cập nhật sự đồng ý – ${group.label}`;
+    const intro = document.createElement('p');
+    intro.textContent = 'Kiểm tra và cập nhật lựa chọn cho toàn bộ mục đích thuộc sản phẩm/dịch vụ này.';
+    const form = document.createElement('form');
+    const options = document.createElement('div'); options.className = 'reconsent-options';
+    const inputsById = new Map();
+    const requiredControls = [];
+
+    for (const [key, config] of Object.entries(group.checkboxes)) {
+      const section = document.createElement('section'); section.className = 'renew-product';
+      const title = document.createElement('h3');
+      title.textContent = config.required ? 'Mục đích bắt buộc' : 'Mục đích không bắt buộc';
+      section.append(title);
+      if (config.required) {
+        const label = document.createElement('label'); label.className = 'consent-option';
+        const master = document.createElement('input'); master.type = 'checkbox';
+        master.checked = config.purposes.every(id => D.validPurpose(statusById.get(String(id))));
+        requiredControls.push(master);
+        const description = document.createElement('span');
+        description.textContent = `${config.label} (Đồng ý toàn bộ ${config.purposes.length} mục đích)`;
+        label.append(master, description); section.append(label);
+        const detail = document.createElement('ul'); detail.className = 'reconsent-required-list';
+        for (const id of config.purposes) {
+          const item = document.createElement('li');
+          const p = statusById.get(String(id));
+          item.textContent = p.purpose_name || purposeNames[String(id)] || 'Mục đích xử lý dữ liệu';
+          detail.append(item);
+          inputsById.set(String(id), master);
+        }
+        section.append(detail);
+      } else {
+        const allLabel = document.createElement('label'); allLabel.className = 'consent-option';
+        const selectAll = document.createElement('input'); selectAll.type = 'checkbox';
+        const allText = document.createElement('span'); allText.textContent = 'Chọn tất cả';
+        allLabel.append(selectAll, allText); section.append(allLabel);
+        const childInputs = [];
+        for (const id of config.purposes) {
+          const purpose = statusById.get(String(id));
+          const label = document.createElement('label'); label.className = 'consent-option';
+          const input = document.createElement('input'); input.type = 'checkbox';
+          input.checked = D.validPurpose(purpose);
+          // Đồng ý đang có hiệu lực chỉ được rút qua chức năng Rút lại sự đồng ý.
+          input.disabled = input.checked;
+          inputsById.set(String(id), input); childInputs.push(input);
+          const labelText = document.createElement('span');
+          labelText.textContent = purpose.purpose_name || purposeNames[String(id)] || 'Mục đích xử lý dữ liệu';
+          label.append(input, labelText); section.append(label);
+        }
+        const syncAll = () => {
+          const chosen = childInputs.filter(input => input.checked).length;
+          selectAll.checked = chosen === childInputs.length;
+          selectAll.indeterminate = chosen > 0 && chosen < childInputs.length;
+        };
+        selectAll.onchange = () => { childInputs.forEach(input => { if (!input.disabled) input.checked = selectAll.checked; }); syncAll(); };
+        childInputs.forEach(input => input.addEventListener('change', syncAll));
+        syncAll();
+      }
+      options.append(section);
+    }
+    const policy = document.createElement('button'); policy.className = 'text-link';
+    policy.type = 'button'; policy.textContent = 'Xem chính sách xử lý dữ liệu cá nhân';
+    policy.onclick = openPolicyDialog;
+    const feedback = document.createElement('p'); feedback.className = 'api-message'; feedback.setAttribute('role', 'status');
+    const actions = document.createElement('div'); actions.className = 'form-foot';
+    const cancel = document.createElement('button'); cancel.className = 'btn btn-light';
+    cancel.type = 'button'; cancel.textContent = 'Hủy'; cancel.onclick = () => dialog.close();
+    const send = document.createElement('button'); send.className = 'btn btn-blue';
+    send.type = 'submit'; send.textContent = 'Cập nhật sự đồng ý';
+    actions.append(cancel, send); form.append(options, policy, feedback, actions);
+    dialog.append(heading, intro, form);
+    document.body.append(dialog); dialog.addEventListener('close', () => dialog.remove());
+    let busy = false;
+    form.onsubmit = async event => {
+      event.preventDefault();
+      if (busy) return;
+      if (requiredControls.some(input => !input.checked)) {
+        feedback.textContent = 'Cần đồng ý với toàn bộ nhóm mục đích bắt buộc để cập nhật sản phẩm này.';
+        return;
+      }
+      busy = true; send.disabled = true; cancel.disabled = true; feedback.textContent = '';
+      try {
+        // Tải lại ngay trước khi gửi để tránh sử dụng thông tin khách hàng cũ.
+        const freshSubject = D.selectSubject(await D.lookup(current.pnr));
+        if (!freshSubject) throw Error('Không tìm thấy tài khoản để cập nhật sự đồng ý.');
+        const currentPurposes = (freshSubject.consents || []).flatMap(c => c.purposes || []);
+        for (const id of configuredIds) {
+          if (currentPurposes.filter(p => String(p.purpose_id) === id).length !== 1) {
+            throw Error('Danh sách mục đích thuộc sản phẩm đã thay đổi. Vui lòng tải lại thông tin.');
+          }
+        }
+        const data = {
+          sub_name: freshSubject.subject_name || subject.subject_name || '',
+          sub_phone: freshSubject.subject_phone || subject.subject_phone || '',
+          sub_email: freshSubject.subject_email || subject.subject_email || '',
+          sub_dob: freshSubject.subject_dob || subject.subject_dob || '',
+          sub_cid: freshSubject.subject_cid || subject.subject_cid || '',
+          sub_nationality: freshSubject.subject_nationality || subject.subject_nationality || ''
+        };
+        const purposeChoices = Object.fromEntries(configuredIds.map(id => {
+          const latest = currentPurposes.find(p => String(p.purpose_id) === id);
+          // Không ghi đè consent đã đồng ý và còn hiệu lực bằng rejected.
+          return [id, D.validPurpose(latest) || inputsById.get(id).checked];
+        }));
+        const values = Object.fromEntries(Object.entries(group.checkboxes).map(([key, box]) => [
+          key, box.purposes.every(id => purposeChoices[String(id)])
+        ]));
+        const body = D.payload(type, data, current.pnr, values, 'CONSENT_RENEWAL', purposeChoices);
+        // Toàn bộ mục đích thuộc sản phẩm: checked => agreed, unchecked => rejected.
+        // Những mục đích đã agreed hợp lệ được tích sẵn khi mở form.
+        await D.submit(type, body);
+        dialog.close();
+        await reload();
+        message('consentMessage', `Đã cập nhật sự đồng ý cho sản phẩm ${group.label}.`);
+      } catch (error) {
+        feedback.textContent = error.message;
+      } finally {
+        busy = false; send.disabled = false; cancel.disabled = false;
+      }
+    };
     dialog.showModal();
   }
 
   if ($('consentList')) {
     if (!current) { location.replace('login.html'); return; }
     const load = async () => {
-      $('openWithdrawal').disabled = true;
-      $('openWithdrawal').onclick = null;
-      $('refreshConsents').disabled = true; message('consentMessage', 'Đang tải…'); $('consentList').replaceChildren();
+      $('refreshConsents').disabled = true;
+      message('consentMessage', 'Đang tải…');
+      $('consentList').replaceChildren();
       try {
         const subject = D.selectSubject(await D.lookup(current.pnr));
         if (!subject) throw Error('Không tìm thấy tài khoản.');
-        const eligibleMap = new Map();
-
-        for (const consent of subject.consents || []) {
-          for (const purpose of consent.purposes || []) {
-            const id = String(purpose.purpose_id);
-
-            const withdrawalId =
-              withdrawalPurposes[id] ||
-              (
-                Object.values(withdrawalPurposes).includes(id)
-                  ? id
-                  : null
-              );
-
-            if (withdrawalId && D.validPurpose(purpose)) {
-              eligibleMap.set(withdrawalId, {
-                ...purpose,
-                withdrawalId
-              });
+        // Rút lại trong từng sản phẩm. Chỉ các mục đích ngân hàng không bắt buộc
+        // và duy nhất mục đích liên kết ví đã agreed còn hiệu lực mới được chọn.
+        const eligibleForType = type => {
+          const mapping = type === 'account_link'
+            ? { [walletWithdrawalPurpose.purposeId]: walletWithdrawalPurpose.withdrawalId }
+            : withdrawalPurposes;
+          const map = new Map();
+          for (const consent of subject.consents || []) {
+            for (const purpose of consent.purposes || []) {
+              const id = String(purpose.purpose_id);
+              if (mapping[id] && D.validPurpose(purpose)) {
+                map.set(id, {
+                  ...purpose,
+                  purpose_id: id,
+                  withdrawalId: mapping[id],
+                  purpose_name: type === 'account_link'
+                    ? walletWithdrawalPurpose.name
+                    : (purpose.purpose_name || purposeNames[id])
+                });
+              }
             }
           }
-        }
-
-        const eligiblePurposes = [...eligibleMap.values()];
-
-        $('openWithdrawal').disabled = eligiblePurposes.length === 0;
-
-        $('openWithdrawal').onclick = () => {
-          openWithdrawalForm(eligiblePurposes, subject);
+          return [...map.values()];
         };
-        D.saveSession(current.pnr, subject); message('customerSummary', `${subject.subject_name || ''} · Số tài khoản: ${current.pnr.slice(C.PNR_PREFIX.length)} · ${current.pnr}`);
+        D.saveSession(current.pnr, subject);
+        const accountNumber = current.pnr.startsWith(C.PNR_PREFIX) ? current.pnr.slice(C.PNR_PREFIX.length) : current.pnr;
+        const customerName = $('customerName');
+        if (customerName) customerName.textContent = subject.subject_name || 'Khách hàng Eximbank';
+        message('customerSummary', `Tài khoản: ${accountNumber.replace(/.(?=.{4})/g, '•')} · Mã tham chiếu: ${current.pnr}`);
         let count = 0;
-        for (const consent of subject.consents || []) for (const purpose of consent.purposes || []) {
-          count++; const type = Object.keys(C.CONSENTS).find(t => D.ids(t).includes(purpose.purpose_id));
-          const row = document.createElement('article'); row.className = 'consent-record';
-          const title = document.createElement('h3'); title.textContent = purpose.purpose_name || purpose.purpose_id;
-          const detail = document.createElement('p');
-          const status =
-            purpose.status === 'agreed'
-              ? (
-                D.validPurpose(purpose)
-                  ? 'Đã đồng ý · Còn hiệu lực'
-                  : 'Đã đồng ý · Hết hạn hoặc thời hạn không hợp lệ'
-              )
-              : purpose.status === 'rejected'
-                ? 'Không đồng ý'
-                : purpose.status === 'revoked'
-                  ? 'Đã rút lại sự đồng ý'
-                  : purpose.status;
-          detail.textContent = `${type ? C.CONSENTS[type].label : (consent.product_name || 'Chưa phân nhóm')} · ${purpose.purpose_id} · ${status}`;
-
-          const expiry = document.createElement('p');
-          const rawExpiry = purpose.expired_time;
-
-          const expiryDate = new Date(
-            typeof rawExpiry === 'string' && /^\d+$/.test(rawExpiry.trim())
-              ? Number(rawExpiry)
-              : rawExpiry
-          );
-
-          if (purpose.status === 'revoked') {
-            expiry.textContent = 'Không còn hiệu lực do đã rút lại sự đồng ý.';
-          } else if (purpose.status === 'rejected') {
-            expiry.textContent = 'Không có hiệu lực do chưa đồng ý.';
-          } else if (
-            rawExpiry == null ||
-            (typeof rawExpiry === 'string' && rawExpiry.trim() === '') ||
-            Number.isNaN(expiryDate.getTime())
-          ) {
-            expiry.textContent = 'Thời hạn: Có hiệu lực đến khi kết thúc dịch vụ hoặc rút lại sự đồng ý.';
-          } else {
-            expiry.textContent = `Thời hạn: ${expiryDate.toLocaleString('vi-VN')}`;
-          }
-
-          row.append(title, detail, expiry);
-
-          const purposeId = String(purpose.purpose_id);
-
-          const canWithdraw =
-            Object.prototype.hasOwnProperty.call(withdrawalPurposes, purposeId) ||
-            Object.values(withdrawalPurposes).includes(purposeId);
-
-          if (!canWithdraw) {
-            const note = document.createElement('p');
-            note.textContent =
-              'Cần có sự đồng ý để thực hiện nghiệp vụ chính.';
-            note.style.cssText = 'color: #64748b; font-size: 13px;';
-            row.append(note);
-          }
-          $('consentList').append(row);
+        const products = new Map();
+        for (const consent of subject.consents || []) {
+          const name = consent.product_name || 'Sản phẩm/dịch vụ chưa đặt tên';
+          if (!products.has(name)) products.set(name, []);
+          products.get(name).push(...(consent.purposes || []));
         }
+        const filterButtons = [...document.querySelectorAll('[data-consent-filter]')];
+        let activeFilter = filterButtons.find(button => button.classList.contains('is-active'))?.dataset.consentFilter || 'all';
+        const records = [];
+        let productIndex = 0;
+        for (const [productName, productPurposes] of products) {
+          const product = document.createElement('details');
+          product.className = 'consent-product';
+          product.open = productIndex === 0;
+          productIndex++;
+          const summary = document.createElement('summary');
+          const heading = document.createElement('div'); heading.className = 'consent-product-heading';
+          const symbol = document.createElement('span'); symbol.className = 'consent-product-icon'; symbol.setAttribute('aria-hidden', 'true');
+          symbol.textContent = /liên kết|ví|đối tác|thanh toán/i.test(productName) ? '▣' : '▥';
+          const labels = document.createElement('span'); labels.className = 'consent-product-labels';
+          const productTitle = document.createElement('strong'); productTitle.textContent = productName;
+          const tally = document.createElement('small'); tally.className = 'product-count'; tally.textContent = `${productPurposes.length} mục đích xử lý`;
+          labels.append(productTitle, tally); heading.append(symbol, labels);
+          const chevron = document.createElement('span'); chevron.className = 'consent-chevron'; chevron.textContent = '⌄'; chevron.setAttribute('aria-hidden', 'true');
+          summary.append(heading, chevron); product.append(summary);
+          const items = document.createElement('div'); items.className = 'consent-product-items';
+          for (const purpose of productPurposes) {
+            count++;
+            const row = document.createElement('article'); row.className = 'consent-record';
+            const title = document.createElement('strong'); title.className = 'consent-record-title';
+            title.textContent = purpose.purpose_name || purposeNames[String(purpose.purpose_id)] || 'Mục đích xử lý dữ liệu';
+            const status = document.createElement('span'); status.className = 'consent-status';
+            const active = purpose.status === 'agreed' && D.validPurpose(purpose);
+            row.dataset.consentState = active ? 'active' : 'inactive';
+            if (active) { status.textContent = 'Đã đồng ý'; status.classList.add('is-active'); }
+            else if (purpose.status === 'revoked') { status.textContent = 'Đã rút lại'; status.classList.add('is-withdrawn'); }
+            else if (purpose.status === 'rejected') { status.textContent = 'Không đồng ý'; status.classList.add('is-inactive'); }
+            else if (purpose.status === 'agreed') { status.textContent = 'Hết hiệu lực'; status.classList.add('is-expired'); }
+            else { status.textContent = 'Không hiệu lực'; status.classList.add('is-inactive'); }
+            const expiry = document.createElement('small'); expiry.className = 'consent-expiry';
+            const rawExpiry = purpose.expired_time;
+            const expiryDate = new Date(typeof rawExpiry === 'string' && /^\d+$/.test(rawExpiry.trim()) ? Number(rawExpiry) : rawExpiry);
+            if (purpose.status === 'revoked') expiry.textContent = 'Thời hạn: Đã rút lại';
+            else if (purpose.status === 'rejected') expiry.textContent = 'Thời hạn: Chưa đồng ý';
+            else if (rawExpiry == null || rawExpiry === '' || Number.isNaN(expiryDate.getTime())) expiry.textContent = 'Thời hạn: Đến khi rút lại sự đồng ý';
+            else expiry.textContent = `Thời hạn: ${expiryDate.toLocaleString('vi-VN')}`;
+            const body = document.createElement('div'); body.className = 'consent-record-info'; body.append(title, expiry);
+            row.append(body, status); items.append(row); records.push(row);
+          }
+          product.append(items);
+          // Cập nhật sự đồng ý ngay trong từng sản phẩm, không còn nút chung cuối trang.
+          const matchingTypes = Object.keys(C.CONSENTS).filter(type => {
+            const ids = D.ids(type).map(String);
+            return productPurposes.some(p => ids.includes(String(p.purpose_id)));
+          });
+          if (matchingTypes.length === 1) {
+            const type = matchingTypes[0];
+            const footer = document.createElement('div'); footer.className = 'consent-product-actions';
+            const withdraw = document.createElement('button');
+            withdraw.type = 'button'; withdraw.className = 'btn btn-line';
+            withdraw.textContent = 'Rút lại sự đồng ý';
+            const eligible = eligibleForType(type);
+            withdraw.disabled = eligible.length === 0;
+            withdraw.onclick = () => openWithdrawalForm(eligible, subject, type);
+            const update = document.createElement('button'); update.type = 'button';
+            update.className = 'btn btn-blue'; update.textContent = '↻ Cập nhật sự đồng ý';
+            update.onclick = () => openProductConsentDialog(type, subject, load);
+            footer.append(withdraw, update); product.append(footer);
+          }
+          $('consentList').append(product);
+        }
+        const applyFilter = () => {
+          records.forEach(row => { row.hidden = activeFilter !== 'all' && row.dataset.consentState !== activeFilter; });
+          [...$('consentList').querySelectorAll('.consent-product')].forEach(product => {
+            const visible = [...product.querySelectorAll('.consent-record')].filter(row => !row.hidden).length;
+            product.hidden = visible === 0;
+          });
+          filterButtons.forEach(button => {
+            const selected = button.dataset.consentFilter === activeFilter;
+            button.classList.toggle('is-active', selected);
+            button.setAttribute('aria-pressed', String(selected));
+          });
+          const empty = $('consentEmptyState');
+          if (empty) empty.remove();
+          if (count && !records.some(row => !row.hidden)) {
+            const note = document.createElement('p'); note.id = 'consentEmptyState'; note.className = 'consent-empty'; note.textContent = 'Không có mục đích ở trạng thái đã chọn.'; $('consentList').append(note);
+          }
+        };
+        filterButtons.forEach(button => { button.onclick = () => { activeFilter = button.dataset.consentFilter; applyFilter(); }; });
+        applyFilter();
         message('consentMessage', count ? '' : 'Chưa có thông tin sự đồng ý.');
       } catch (error) { message('consentMessage', error.message); } finally { $('refreshConsents').disabled = false; }
     }; $('refreshConsents').onclick = load; load();
@@ -560,61 +861,65 @@
           : 'Đã tắt giả lập. Hệ thống sẽ kiểm tra hiệu lực thực tế.'
       );
     });
-    boxes($('walletConsent'), ['account_link'], 'wallet_');
-    const inputs = [...$('walletConsent').querySelectorAll('input')]; inputs.forEach(i => i.required = true);
-    const reset = () => { identity = null; $('walletConsent').classList.add('hidden'); inputs.forEach(i => i.checked = false); $('walletConfirm').textContent = 'Xác nhận liên kết'; message('walletMessage', ''); };
-    $('walletPhone').addEventListener('input', reset); $('walletAccount').addEventListener('input', reset);
-    $('walletCancel').addEventListener('click', reset); $('walletBack').addEventListener('click', reset);
+    const reset = () => { message('walletMessage', ''); };
+    $('walletPhone').addEventListener('input', reset);
+    $('walletAccount').addEventListener('input', reset);
     if (current) {
       $('walletPhone').value = current.subject?.subject_phone || '';
       $('walletAccount').value = current.pnr.slice(C.PNR_PREFIX.length);
     }
+    const confirmLink = (subject, code, phone, expired) => new Promise(resolve => {
+      const modal = document.createElement('dialog'); modal.className = 'poc-dialog bank-authorization';
+      const h = document.createElement('div'); h.className = 'bank-auth-head';
+      const brand = document.createElement('strong'); brand.textContent = 'EXIMBANK';
+      const subtitle = document.createElement('small'); subtitle.textContent = 'XÁC NHẬN LIÊN KẾT VÍ ĐIỆN TỬ'; h.append(brand, subtitle);
+      const title = document.createElement('h2'); title.textContent = 'Cho phép liên kết tài khoản?';
+      const desc = document.createElement('p'); desc.textContent = expired ? 'Sự đồng ý trước đó đã hết hiệu lực. Vui lòng xác nhận để tiếp tục.' : 'ShopeePay yêu cầu bạn xác nhận mục đích xử lý dữ liệu dưới đây.';
+      const info = document.createElement('div'); info.className = 'bank-auth-account';
+      const name = document.createElement('strong'); name.textContent = subject.subject_name || 'Khách hàng Eximbank';
+      const number = document.createElement('small'); number.textContent = `Tài khoản Eximbank: ****${code.slice(-4)} · ShopeePay`;
+      info.append(name, number);
+      const purpose = document.createElement('div'); purpose.className = 'bank-auth-purpose';
+      const purposeTitle = document.createElement('strong'); purposeTitle.textContent = purposeNames[C.CONSENTS.account_link.checkboxes.wallet_link.purposes[0]] || 'Liên kết và sử dụng dịch vụ đối tác';
+      const purposeDesc = document.createElement('p'); purposeDesc.textContent = 'Cho phép xử lý thông tin tài khoản cần thiết để xác thực và thiết lập liên kết với ví điện tử.';
+      purpose.append(purposeTitle, purposeDesc);
+      const policy = document.createElement('button'); policy.className = 'text-link'; policy.type = 'button'; policy.textContent = 'Xem chính sách xử lý dữ liệu cá nhân'; policy.onclick = openPolicyDialog;
+      const actions = document.createElement('div'); actions.className = 'form-foot';
+      const cancel = document.createElement('button'); cancel.type = 'button'; cancel.className = 'btn btn-light'; cancel.textContent = 'Hủy';
+      const agree = document.createElement('button'); agree.type = 'button'; agree.className = 'btn btn-blue'; agree.textContent = 'Đồng ý và liên kết';
+      actions.append(cancel, agree); modal.append(h, title, desc, info, purpose, policy, actions); document.body.append(modal);
+      let answered = false;
+      const finish = value => { if (answered) return; answered = true; modal.close(); resolve(value) };
+      cancel.onclick = () => finish(false); agree.onclick = () => finish(true);
+      modal.addEventListener('cancel', () => finish(false)); modal.addEventListener('close', () => { modal.remove(); if (!answered) finish(false) });
+      modal.showModal();
+    });
     $('walletConfirm').onclick = async () => {
-      if (busy) return; demoExpired.disabled = true; busy = true; $('walletConfirm').disabled = true; $('walletPhone').disabled = true; $('walletAccount').disabled = true;
+      if (busy) return;
+      busy = true; demoExpired.disabled = true;
+      $('walletConfirm').disabled = true; $('walletPhone').disabled = true; $('walletAccount').disabled = true;
       try {
         const phone = $('walletPhone').value.trim(), account = $('walletAccount').value.trim();
-        if (!/^0\d{9}$/.test(phone)) {
-          throw Error('Số điện thoại gồm 10 chữ số và bắt đầu bằng 0.');
-        }
-
-        if (!D.isAccountNumber(account)) {
-          throw Error('Vui lòng nhập đúng số tài khoản được cấp khi đăng ký.');
-        }
+        if (!/^0\d{9}$/.test(phone)) throw Error('Số điện thoại gồm 10 chữ số và bắt đầu bằng 0.');
+        if (!D.isAccountNumber(account)) throw Error('Vui lòng nhập đúng số tài khoản được cấp khi đăng ký.');
         const code = D.pnr(account);
         message('walletMessage', 'Đang kiểm tra sự đồng ý…');
-        const subject = D.selectSubject(await D.lookup(code), phone); if (!subject) throw Error('Tài khoản không tồn tại. Vui lòng đăng ký mở tài khoản.');
+        const subject = D.selectSubject(await D.lookup(code), phone);
+        if (!subject) throw Error('Tài khoản không tồn tại. Vui lòng đăng ký mở tài khoản.');
         if (demoExpired.checked || !D.canLink(subject)) {
-          if (identity !== code) {
-            identity = code; $('walletConsent').classList.remove('hidden');
-            const linkPurposeIds = D.ids('account_link');
-
-            const expired = demoExpired.checked ||
-              (subject.consents || []).some(consent =>
-                (consent.purposes || []).some(p =>
-                  linkPurposeIds.includes(p.purpose_id) &&
-                  p.status === 'agreed' &&
-                  typeof p.expired_time === 'number' &&
-                  p.expired_time <= Date.now()
-                )
-              );
-
-            message(
-              'walletMessage',
-              expired
-                ? 'Sự đồng ý liên kết tài khoản đã hết hạn. Vui lòng đồng ý để tiếp tục liên kết.'
-                : 'Bạn chưa đồng ý liên kết tài khoản. Vui lòng xem và chọn đồng ý để tiếp tục.'
-            ); $('walletConfirm').textContent = 'Đồng ý và liên kết'; return;
-          }
-          if (inputs.some(i => !i.checked)) throw Error('Vui lòng đồng ý với các mục đích liên kết tài khoản để tiếp tục.');
+          const accepted = await confirmLink(subject, code, phone, demoExpired.checked);
+          if (!accepted) { message('walletMessage', ''); return; }
           const data = { sub_name: subject.subject_name || '', sub_phone: subject.subject_phone || phone, sub_email: subject.subject_email || '', sub_dob: subject.subject_dob || '', sub_cid: subject.subject_cid || '', sub_nationality: subject.subject_nationality || '' };
-          const selected = Object.fromEntries(inputs.map(i => [i.dataset.consentKey, i.checked]));
-          await D.submit('account_link', D.payload('account_link', data, code, selected, 'WALLET_LINK'));
-          const updated = D.selectSubject(await D.lookup(code), phone);
-          if (!updated || !D.canLink(updated)) throw Error('Đã gửi sự đồng ý nhưng chưa tra cứu thấy hiệu lực. Vui lòng kiểm tra lại sau.');
+          await D.submit('account_link', D.payload('account_link', data, code, { wallet_link: true }, 'WALLET_LINK'));
           demoExpired.checked = false;
         }
-        reset(); $('walletPage').classList.add('hidden'); document.title = 'MARTI | Mua sắm trực tuyến'; window.showToast('Liên kết ví thành công (mô phỏng).');
-      } catch (error) { message('walletMessage', error.message); } finally { busy = false; demoExpired.disabled = false; $('walletConfirm').disabled = false; $('walletPhone').disabled = false; $('walletAccount').disabled = false; }
+        message('walletMessage', '');
+        $('walletPage').classList.add('hidden'); document.title = 'MARTI | Mua sắm trực tuyến';
+        if (window.showPaymentResult) window.showPaymentResult(true, 'Thanh toán được mô phỏng sau khi xác nhận liên kết thành công.');
+      } catch (error) {
+        message('walletMessage', error.message);
+        if (window.showPaymentResult) window.showPaymentResult(false, error.message);
+      } finally { busy = false; demoExpired.disabled = false; $('walletConfirm').disabled = false; $('walletPhone').disabled = false; $('walletAccount').disabled = false; }
     };
   }
 })();

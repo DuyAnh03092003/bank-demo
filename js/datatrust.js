@@ -147,9 +147,9 @@
     const ua = navigator.userAgent;
     return { device_type: /Mobile|Android|iPhone/i.test(ua) ? 'mobile' : 'desktop', browser: /Edg\//.test(ua) ? 'Edge' : /Chrome\//.test(ua) ? 'Chrome' : /Firefox\//.test(ua) ? 'Firefox' : /Safari\//.test(ua) ? 'Safari' : 'Other', os: /Windows/.test(ua) ? 'Windows' : /Android/.test(ua) ? 'Android' : /iPhone|iPad/.test(ua) ? 'iOS' : /Mac/.test(ua) ? 'macOS' : /Linux/.test(ua) ? 'Linux' : 'Other' };
   }
-  function payload(type, subject, code, choices, screen = 'ACCOUNT_REGISTRATION') {
+  function payload(type, subject, code, choices, screen = 'ACCOUNT_REGISTRATION', purposeChoices = null) {
     const group = C.CONSENTS[type];
-    const purposes = Object.entries(group.checkboxes).flatMap(([key, box]) => box.purposes.map(id => ({ purpose_id: id, status: choices[key] === true ? 'agreed' : 'rejected' })));
+    const purposes = Object.entries(group.checkboxes).flatMap(([key, box]) => box.purposes.map(id => ({ purpose_id: id, status: purposeChoices && Object.prototype.hasOwnProperty.call(purposeChoices, id) ? (purposeChoices[id] ? 'agreed' : 'rejected') : (choices[key] === true ? 'agreed' : 'rejected') })));
     if (!purposes.length) throw Error('Chưa cấu hình purpose cho ' + type);
     return { method: 'api_sync', pnr: code, channel_context: { int_type: 'checkbox_select', screen_code: screen, screen_vi: screen === 'WALLET_LINK' ? 'Liên kết ví điện tử' : 'Đăng ký mở tài khoản', screen_en: screen === 'WALLET_LINK' ? 'Wallet Link' : 'Account Registration', comp_type: 'inline_form', text: Object.values(group.checkboxes).map(x => x.label).join('\n'), method: 'ui_interaction', action: screen === 'WALLET_LINK' ? 'Đồng ý và liên kết' : 'Xác nhận đăng ký' }, device_info: device(), source: { sys_name: 'Website POC Eximbank', sys_code: 'EXIMBANK_POC', channel: 'web_app', col_type: 'processor_third_party', col_name: 'DataTrust' }, datas: [{ ...subject, sub_code: '', is_submitter: true, purposes }] };
   }
