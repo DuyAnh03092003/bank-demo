@@ -751,10 +751,13 @@
           for (const purpose of productPurposes) {
             count++;
             const row = document.createElement('article'); row.className = 'consent-record';
+            const title = document.createElement('strong');
+            title.className = 'consent-record-title';
+            const purposeId = String(purpose.purpose_id);
             const isRequired = Object.values(C.CONSENTS).some(group =>
               Object.values(group.checkboxes).some(config =>
                 config.required &&
-                config.purposes.includes(purposeId)
+                config.purposes.some(id => String(id) === purposeId)
               )
             );
 
