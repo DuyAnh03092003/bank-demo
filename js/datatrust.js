@@ -109,9 +109,16 @@
     } finally { clearTimeout(timer); }
   }
   async function lookup(code) {
-    const body = await request(C.STATUS_PATH + '?pnr=' + encodeURIComponent(code), {}, true, true);
-    if (body.success !== true || !Array.isArray(body.data)) throw Error('Response tra cứu không đúng cấu trúc success/data.');
-    if (body.pnr && body.pnr !== code) throw Error('API trả về mã tham chiếu không khớp.');
+    const body = await request(
+      '/consent-status?pnr=' + encodeURIComponent(code),
+      {},
+      true
+    );
+
+    if (body.success !== true || !Array.isArray(body.data)) {
+      throw Error('Response tra cứu không đúng cấu trúc');
+    }
+
     return body.data;
   }
   function selectSubject(subjects, phone) {
@@ -154,10 +161,18 @@
     return { method: 'api_sync', pnr: code, channel_context: { int_type: 'checkbox_select', screen_code: screen, screen_vi: screen === 'WALLET_LINK' ? 'Liên kết ví điện tử' : 'Đăng ký mở tài khoản', screen_en: screen === 'WALLET_LINK' ? 'Wallet Link' : 'Account Registration', comp_type: 'inline_form', text: Object.values(group.checkboxes).map(x => x.label).join('\n'), method: 'ui_interaction', action: screen === 'WALLET_LINK' ? 'Đồng ý và liên kết' : 'Xác nhận đăng ký' }, device_info: device(), source: { sys_name: 'Website POC Eximbank', sys_code: 'EXIMBANK_POC', channel: 'web_app', col_type: 'processor_third_party', col_name: 'DataTrust' }, datas: [{ ...subject, sub_code: '', is_submitter: true, purposes }] };
   }
   async function submit(type, body) {
-    const form = new FormData(); form.append('text', JSON.stringify(body));
-    const result = await request(C.CONSENTS[type].path, { method: 'POST', body: form }, true);
-    if (!C.isConsentSuccess(result)) throw Error(result.message || 'API chưa xác nhận ghi nhận consent thành công.');
-    return result;
+    const productId = C.CONSENTS[type].productId;
+
+    return await request(
+      '/consent/' + encodeURIComponent(productId),
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      }
+    );
   }
   function session() { try { const x = JSON.parse(sessionStorage.getItem(sessionKey)); return x?.pnr ? x : null; } catch { return null; } }
   function saveSession(code, subject) { sessionStorage.setItem(sessionKey, JSON.stringify({ pnr: code, subject })); }
