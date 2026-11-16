@@ -81,7 +81,7 @@
   }
   function url(path) {
     if (!C.WS.trim()) throw Error('Vui lòng điền WS trong js/config.js.');
-    return C.API_BASE_URL.replace(/\/$/, '') + path.replace('{WS}', encodeURIComponent(C.WS.trim()));
+    return C.MIDDLEWARE_BASE_URL.replace(/\/$/, '') + path.replace('{WS}', encodeURIComponent(C.WS.trim()));
   }
   async function request(path, options = {}, auth = false, allowEmptyLookup = false) {
     const headers = { Accept: 'application/json' };
