@@ -4,7 +4,6 @@ EXIMBANK POC — TÍCH HỢP CONSENT
 Mở js/config.js:
 - WS: điền workspace dùng chung cho hai API POST và GET.
 - API_TOKEN: điền token Authorization nguyên văn. Không tự thêm Bearer.
-- API_BASE_URL / IP: chỉnh địa chỉ API và IP được cho phép.
 - CONSENTS.bank_service.checkboxes.account_service.purposes: điền list mục đích dịch vụ.
 - CONSENTS.bank_service.checkboxes.offers.purposes: điền list mục đích tiếp thị.
   Ví dụ cú pháp list: ['PUR_00000', 'PUR_00001']. Không dùng lại một ID ở hai checkbox.

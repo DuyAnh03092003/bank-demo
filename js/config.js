@@ -1,16 +1,11 @@
 // Chỉnh cấu hình tại đây. Không điền purpose giả: các list trống sẽ chặn gửi.
 window.POC_CONFIG = {
-  API_BASE_URL: 'https://apis-demo.datatrust.one',
   MIDDLEWARE_BASE_URL: 'https://ws-token-controller.onrender.com',
   WS: '72902157445621861', // Điền workspace dùng chung cho GET và hai POST
-  API_TOKEN: 'eyJraWQiOiIxLTg3ZTg5Y2JlLTJkNzYtNDE3NC1hOTY2LWI2NTk2MThlNDg5YSIsImFsZyI6IlJTNTEyIiwidHlwIjoiSldUIn0.eyJpc3MiOiJEYXRhIFRydXN0IEludGVyZ3JhdGlvbiAtIDEiLCJzdWIiOiJUb2tlbiBBY2Nlc3MgSW50ZWdyYXRpb24iLCJleHAiOjE4MjU3NTQyMzAsIm5iZiI6MTc5NDIxODIyMCwiaWF0IjoxNzk0MjE4MjIwLCJzY29wZXMiOnsiYXBpcyI6WyJ3cml0ZSIsInJlYWQiLCJkZWxldGUiXX0sInVzZXJJZCI6IjE5ODA4Mjg1ODAiLCJ3b3Jrc3BhY2VJZCI6IjcyOTAyMTU3NDQ1NjIxODYxIn0.p3CfAwtnlODy4aKinnK4lt7isquN29cVAZE2CdY4qv3LRkQH4tpfEZrGevKVTOT7PVkj7CoCLRVXISN0oBoTZU27l3pCC50rE43-KRJ_yrtKrY_bSdrN1qnimrRQP_RhJoNpVOk2WydG_eEE9dpZ3LuC63Zigj4YQUv42ux_ZHQ', // Authorization: token nguyên văn, không tự thêm Bearer
-  IP: '10.10.10.25',
   PNR_PREFIX: '',
   TIMEOUT_MS: 20000,
-  STATUS_PATH: '/{WS}/integration/consent-status',
   CONSENTS: {
     bank_service: {
-      path: '/{WS}/integration/consent/042954f0-6a0b-4098-8676-c91d5df5d2ae',
       productId: '042954f0-6a0b-4098-8676-c91d5df5d2ae',
       label: 'Dịch vụ ngân hàng',
       checkboxes: {
@@ -19,7 +14,6 @@ window.POC_CONFIG = {
       }
     },
     account_link: {
-      path: '/{WS}/integration/consent/1aca2b1c-f896-47bd-83a0-e2b5274d0fec',
       productId: '1aca2b1c-f896-47bd-83a0-e2b5274d0fec',
       label: 'Liên kết tài khoản',
       checkboxes: {
@@ -27,7 +21,5 @@ window.POC_CONFIG = {
       }
     }
   },
-  // Chưa có response POST chính thức: chấp nhận HTTP 2xx, trừ success:false/error.
-  // Sửa hàm này nếu API dùng quy tắc khác.
   isConsentSuccess: body => body?.success !== false && !body?.error
 };

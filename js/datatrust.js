@@ -81,20 +81,18 @@
   }
   function url(path) {
     if (!C.WS.trim()) throw Error('Vui lòng điền WS trong js/config.js.');
-    return C.MIDDLEWARE_BASE_URL.replace(/\/$/, '') + path.replace('{WS}', encodeURIComponent(C.WS.trim()));
+    const base = C.MIDDLEWARE_BASE_URL.replace(/\/+$/, '');
+    const ws = encodeURIComponent(C.WS.trim());
+    return `${base}/api/integration/${ws}${path}`;
   }
-  async function request(path, options = {}, auth = false, allowEmptyLookup = false) {
-    const headers = { Accept: 'application/json' };
-    if (auth) {
-      if (!C.API_TOKEN.trim()) throw Error('Vui lòng điền API_TOKEN trong js/config.js.');
-      headers.Authorization = C.API_TOKEN.trim();
-      if (C.IP) headers['X-Forwarded-For'] = C.IP;
-    }
+  async function request(path, options = {}, allowEmptyLookup = false) {
+    // Trình duyệt chỉ gửi dữ liệu tới Middleware. Token do Middleware tự lấy từ MongoDB.
+    const headers = { Accept: 'application/json', ...(options.headers || {}) };
     const controller = new AbortController(), timer = setTimeout(() => controller.abort(), C.TIMEOUT_MS);
     try {
       const response = await fetch(url(path), { ...options, headers, signal: controller.signal });
-      if (response.status === 204 && allowEmptyLookup) {
-        return { success: true, data: [] };
+      if (response.status === 204 && response.ok) {
+        return allowEmptyLookup ? { success: true, data: [] } : { success: true };
       }
 
       const raw = await response.text();
