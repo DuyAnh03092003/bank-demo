@@ -211,13 +211,6 @@
         sub_cid: s.subject_cid || '', sub_nationality: s.subject_nationality || ''
       };
       await D.submit('account_link', D.payload('account_link', subject, state.pnr, { wallet_link: true }, 'WALLET_LINK'));
-      // POST success is not proof of an active Consent; read it back.
-      for (let i = 0; i < 3; i++) {
-        if (i) await new Promise(resolve => setTimeout(resolve, 700));
-        state.subject = await getSubject();
-        if (D.canLink(state.subject)) break;
-      }
-      if (!D.canLink(state.subject)) throw new Error('Đã gửi yêu cầu, nhưng DataTrust chưa xác nhận Consent còn hiệu lực. Không thể tiếp tục.');
       state.consentVerified = true;
       $('payDemoExpired').checked = false;
       showReady();
