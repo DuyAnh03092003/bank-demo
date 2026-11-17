@@ -486,7 +486,7 @@
         timer = setTimeout(() => controller.abort(), 20000);
 
         const response = await fetch(
-          isWallet ? withdrawalFormUrl : (C.WITHDRAWAL_URL || withdrawalFormUrl),
+          C.WITHDRAWAL_URL || withdrawalFormUrl,
           {
             method: 'POST',
             headers: { Accept: 'application/json' },
