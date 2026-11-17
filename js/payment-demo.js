@@ -158,8 +158,6 @@
     $('payOtpDemo').value = state.otp; // demo only: deliberately copyable test code
     $('payOtpStatus').textContent = 'Đã phát hành OTP giả lập; vui lòng nhập mã trước khi hết hạn.';
     // Native alert is intentional, per the POC scenario. Never accept a real bank OTP.
-    window.alert?.('EXIMBANK POC – OTP GIẢ LẬP\n\nMã xác nhận thử nghiệm: ' + state.otp +
-      '\n\nBạn có thể sao chép mã này để nhập vào popup Eximbank.\nKhông sử dụng OTP ngân hàng thật.');
     $('payOtpInput').focus?.();
   }
   function openConsentPopup() {
