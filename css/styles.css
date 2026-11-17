@@ -4486,3 +4486,1168 @@ body.third-party .gateway-mock.wallet-page {
         display: none;
     }
 }
+
+/* ============================================================
+   Payment POC v2 — close layout alignment with reference screenshot.
+   Keeps clearly visible DEMO identification; NEVER handles real cards.
+   ============================================================ */
+body.third-party .gateway-mock.wallet-page {
+    padding: 12px 14px 34px !important;
+    background: #f4f6f8 !important;
+    overflow-x: hidden;
+    align-items: start;
+}
+
+.gateway-language {
+    width: min(920px, 100%);
+    text-align: right;
+    font-size: 12px;
+    color: #171c24;
+    padding: 0 4px 12px;
+    line-height: 12px;
+}
+
+.gateway-shell {
+    width: min(920px, 100%);
+    border-radius: 6px;
+    box-shadow: 0 2px 9px rgba(20, 38, 58, .14);
+}
+
+.gateway-demo-ribbon {
+    padding: 6px 16px;
+    background: #fff3db;
+    border-bottom: 1px solid #f4dba1;
+    color: #704b10;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1.3;
+}
+
+.gateway-header {
+    min-height: 72px;
+    padding: 12px 25px;
+    gap: 16px;
+}
+
+.gateway-brand {
+    gap: 11px;
+}
+
+.gateway-brand-symbol {
+    position: relative;
+    width: 34px;
+    height: 34px;
+    border-radius: 0;
+    transform: rotate(-45deg) scale(.84);
+    background: #e90032;
+    font-size: 0;
+}
+
+.gateway-brand-symbol:after {
+    content: '';
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background: #0070ad;
+    left: -13px;
+    top: -8px;
+    border-radius: 4px;
+    z-index: -1;
+}
+
+.gateway-brand small {
+    font-size: 8px;
+    letter-spacing: .045em;
+    font-weight: 600;
+    color: #0577ad;
+    margin: 0 0 1px;
+}
+
+.gateway-brand strong {
+    line-height: 1;
+    color: #0265a4;
+    font-weight: 900;
+    font-size: 17px;
+    letter-spacing: -.05em;
+}
+
+.gateway-brand strong b {
+    color: #e60029;
+    font-weight: 900;
+}
+
+.gateway-head-right {
+    gap: 28px;
+}
+
+.gateway-bank-mark {
+    font-size: 22px;
+    letter-spacing: -.03em;
+}
+
+.gateway-bank-mark b {
+    font-size: 9px;
+    vertical-align: middle;
+    letter-spacing: 0;
+}
+
+.gateway-timer {
+    gap: 11px;
+}
+
+.gateway-timer small {
+    font-size: 13px;
+    color: #52647f;
+}
+
+.gateway-timer strong {
+    padding: 6px 10px;
+    background: #202731;
+    border-radius: 4px;
+    font-size: 18px;
+    line-height: 1.25;
+    letter-spacing: 2px;
+}
+
+.gateway-layout {
+    grid-template-columns: 348px minmax(0, 1fr);
+    gap: 46px;
+    padding: 24px;
+    min-height: 695px;
+    align-items: start;
+}
+
+.gateway-receipt {
+    min-height: 470px;
+    padding: 26px 24px;
+    margin-right: 0;
+    border-radius: 3px;
+    background: #f4f6f8;
+}
+
+.gateway-receipt h2 {
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.35;
+    margin: 0 0 25px;
+}
+
+.gateway-receipt h2 span {
+    font-size: 18px;
+}
+
+.gateway-receipt-rule {
+    margin: 0 0 26px;
+    height: 1px;
+    background: #c8d4e2;
+}
+
+.gateway-receipt-line {
+    gap: 7px;
+    margin-bottom: 28px;
+}
+
+.gateway-receipt-line small {
+    color: #587997;
+    font-size: 13px;
+}
+
+.gateway-receipt-line strong {
+    color: #007bb8;
+    font-size: 24px;
+}
+
+.gateway-receipt-line b {
+    color: #111b29;
+    font-size: 16px;
+}
+
+.gateway-form {
+    padding: 0 22px 0 0;
+    min-width: 0;
+}
+
+.gateway-steps {
+    display: none;
+}
+
+.gateway-stage h1 {
+    font-size: 22px;
+    font-weight: 500;
+    margin: 1px 0 24px;
+    line-height: 1.42;
+}
+
+.gateway-tab {
+    border-bottom: 2px solid #007fc2;
+    padding: 13px 0 14px;
+    margin-bottom: 25px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.gateway-field {
+    margin: 15px 0 17px;
+}
+
+.gateway-field label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #1a2837;
+    margin-bottom: 8px;
+}
+
+.gateway-field input {
+    height: 37px;
+    border: 1px solid #b8c9db;
+    border-radius: 3px;
+    font-size: 13px;
+    padding: 0 15px;
+}
+
+.gateway-input-bank {
+    position: relative;
+}
+
+.gateway-input-bank input {
+    padding-right: 102px;
+    border-color: #007fc1;
+}
+
+.gateway-inline-brand {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+    font-weight: 800;
+    color: #0073ab;
+    pointer-events: none;
+}
+
+.gateway-fixed-info>div {
+    height: 37px;
+    display: flex;
+    align-items: center;
+    width: 215px;
+    padding: 0 15px;
+    border: 1px solid #b8c9db;
+    border-radius: 3px;
+    color: #687e91;
+    font-size: 12px;
+    background: #f9fafb;
+}
+
+.gateway-promo {
+    margin-top: 14px;
+    padding: 17px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px dashed #e5eaf1;
+    border-bottom: 1px dashed #e5eaf1;
+    font-size: 14px;
+}
+
+.gateway-promo span {
+    background: #f5f7f9;
+    padding: 9px 12px;
+    color: #61758d;
+    font-size: 12px;
+}
+
+.gateway-terms {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 22px 0 20px;
+    color: #0281c0;
+    font-size: 13px;
+    text-decoration: underline;
+    cursor: default;
+}
+
+.gateway-terms span:first-child {
+    font-size: 20px;
+    text-decoration: none;
+}
+
+.gateway-explain {
+    background: #fde9e9;
+    color: #a11c1b;
+    padding: 14px 13px;
+    border-radius: 3px;
+    font-size: 13px;
+    line-height: 1.46;
+}
+
+.gateway-dev-options {
+    color: #8794a2;
+    font-size: 11px;
+    padding-top: 8px;
+}
+
+.gateway-dev-options summary {
+    cursor: pointer;
+}
+
+.gateway-dev-options .gateway-toggle {
+    margin: 12px 0 3px;
+}
+
+.gateway-actions {
+    margin-top: 22px;
+    gap: 16px;
+}
+
+.gateway-btn {
+    min-height: 44px;
+    font-size: 13px;
+    border-radius: 5px;
+}
+
+.gateway-primary {
+    background: #0079b3;
+}
+
+.gateway-primary:hover:not(:disabled) {
+    background: #00699c;
+}
+
+.gateway-secondary {
+    background: #f4f6f8;
+}
+
+.gateway-message {
+    margin-top: 15px;
+}
+
+.gateway-footer {
+    min-height: 76px;
+    padding: 17px 24px;
+    border-top: 1px solid #edf0f4;
+    font-size: 11px;
+}
+
+.gateway-footer button {
+    color: #027fc3;
+    font-size: 13px;
+}
+
+.gateway-otp-card,
+.gateway-consent-card {
+    border-radius: 3px;
+}
+
+@media(max-width:860px) {
+    .gateway-layout {
+        grid-template-columns: 1fr;
+        gap: 22px;
+        min-height: 0;
+        padding: 18px;
+    }
+
+    .gateway-receipt {
+        margin: 0;
+        min-height: 0;
+        padding: 18px;
+    }
+
+    .gateway-receipt-line {
+        display: inline-flex;
+        margin: 0 15px 14px 0;
+        min-width: 43%;
+    }
+
+    .gateway-receipt h2 {
+        font-size: 18px;
+        margin-bottom: 12px;
+    }
+
+    .gateway-receipt-rule {
+        margin-bottom: 14px;
+    }
+
+    .gateway-form {
+        padding: 0;
+    }
+
+    .gateway-head-right {
+        gap: 12px;
+    }
+}
+
+@media(max-width:540px) {
+    body.third-party .gateway-mock.wallet-page {
+        padding: 0 !important;
+    }
+
+    .gateway-language {
+        display: none;
+    }
+
+    .gateway-shell {
+        border-radius: 0;
+    }
+
+    .gateway-demo-ribbon {
+        padding: 7px;
+        font-size: 9px;
+    }
+
+    .gateway-header {
+        padding: 15px;
+        flex-wrap: wrap;
+    }
+
+    .gateway-head-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .gateway-receipt-line {
+        min-width: 44%;
+    }
+
+    .gateway-stage h1 {
+        font-size: 20px;
+    }
+
+    .gateway-promo {
+        gap: 10px;
+    }
+
+    .gateway-promo span {
+        font-size: 11px;
+        text-align: right;
+    }
+
+    .gateway-footer {
+        gap: 8px;
+    }
+}
+
+
+/* ===== PAYMENT POC V3: reference layout from customer screenshot =====
+ * Visual layout only. All existing DataTrust/OTP functions are preserved.
+ * This is not VNPAY's official hosted checkout and accepts only POC IDs.
+ */
+body.third-party .gateway-mock.gateway-ref.wallet-page {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-y: auto;
+    padding: 0 16px 28px !important;
+    background: #f5f7f9 !important;
+    color: #141a24;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body.third-party .gateway-mock.gateway-ref.wallet-page.hidden {
+    display: none !important;
+}
+
+.gateway-ref .gateway-utility {
+    box-sizing: border-box;
+    width: min(846px, 100%);
+    height: 47px;
+    flex: 0 0 47px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+}
+
+.gateway-ref .gateway-utility-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    color: #101722;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.gateway-ref .gateway-back-circle {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #242b34;
+    color: white;
+    display: grid;
+    place-items: center;
+    font-size: 18px;
+    line-height: 1;
+    padding-bottom: 2px;
+}
+
+.gateway-ref .gateway-language {
+    display: inline-block;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    color: #192331;
+    font-size: 12px;
+    line-height: normal;
+    text-align: right;
+}
+
+.gateway-ref .gateway-shell {
+    width: min(846px, 100%);
+    max-width: 100%;
+    background: #fff;
+    flex: 0 0 auto;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 9px rgba(27, 38, 56, .15);
+}
+
+.gateway-ref .gateway-header {
+    min-height: 66px;
+    box-sizing: border-box;
+    padding: 0 23px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e7ebef;
+    gap: 14px;
+}
+
+.gateway-ref .gateway-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex: 0 1 auto;
+    min-width: 0;
+}
+
+.gateway-ref .gateway-bank-logo {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+    gap: 2px;
+}
+
+.gateway-ref .gateway-bank-logo strong {
+    font-size: 16px;
+    font-style: italic;
+    letter-spacing: -.06em;
+    color: #073b91;
+    font-weight: 900;
+}
+
+.gateway-ref .gateway-bank-logo small {
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: .16em;
+    color: #c01e39;
+}
+
+.gateway-ref .gateway-logo-divider {
+    width: 1px;
+    height: 30px;
+    background: #dce3ed;
+}
+
+.gateway-ref .gateway-payment-brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.gateway-ref .gateway-brand-symbol {
+    box-sizing: border-box;
+    display: block;
+    position: relative;
+    width: 25px;
+    height: 25px;
+    transform: rotate(-45deg);
+    border-radius: 3px;
+    background: #e30039;
+    flex: none;
+}
+
+.gateway-ref .gateway-brand-symbol:after {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: -7px;
+    width: 18px;
+    height: 18px;
+    border-radius: 2px;
+    background: #0675bd;
+    z-index: -1;
+}
+
+.gateway-ref .gateway-brand-symbol i {
+    display: block;
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    top: 7px;
+    left: 7px;
+    background: #fff;
+    opacity: .86;
+    border-radius: 1px;
+}
+
+.gateway-ref .gateway-payment-brand small {
+    display: block;
+    margin: 0 0 1px;
+    font-size: 7px;
+    letter-spacing: .02em;
+    color: #0073b2;
+    white-space: nowrap;
+}
+
+.gateway-ref .gateway-payment-brand strong {
+    display: block;
+    line-height: 1.05;
+    font-size: 16px;
+    letter-spacing: -.06em;
+    font-weight: 900;
+    color: #0878bc;
+    white-space: nowrap;
+}
+
+.gateway-ref .gateway-payment-brand strong b {
+    color: #d60537;
+}
+
+.gateway-ref .gateway-head-right {
+    display: flex;
+    gap: 0;
+    align-items: center;
+}
+
+.gateway-ref .gateway-timer {
+    display: flex;
+    gap: 9px;
+    align-items: center;
+}
+
+.gateway-ref .gateway-timer small {
+    font-size: 12px;
+    color: #647a94;
+    white-space: nowrap;
+}
+
+.gateway-ref .gateway-timer strong {
+    background: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0;
+    border-radius: 0;
+    color: #fff;
+    font-size: 15px;
+    letter-spacing: 0;
+}
+
+.gateway-ref .gateway-timer strong span {
+    display: flex;
+    min-width: 29px;
+    height: 30px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    background: #1e2731;
+    color: #fff;
+    font-weight: 700;
+}
+
+.gateway-ref .gateway-timer strong i {
+    font-style: normal;
+    color: #202833;
+}
+
+.gateway-ref .gateway-layout {
+    display: grid;
+    grid-template-columns: 320px minmax(0, 1fr);
+    gap: 42px;
+    min-height: 640px;
+    box-sizing: border-box;
+    padding: 22px 23px 20px;
+    align-items: start;
+}
+
+.gateway-ref .gateway-receipt {
+    margin: 0;
+    box-sizing: border-box;
+    width: 320px;
+    min-height: 432px;
+    border-radius: 3px;
+    background: #f4f6f8;
+    padding: 24px 22px;
+    color: #0b1524;
+}
+
+.gateway-ref .gateway-receipt h2 {
+    font-size: 21px;
+    font-weight: 400;
+    line-height: 1.25;
+    margin: 0 0 24px;
+    white-space: nowrap;
+}
+
+.gateway-ref .gateway-receipt h2 span {
+    font-size: 19px;
+    font-weight: 400;
+}
+
+.gateway-ref .gateway-receipt-rule {
+    height: 1px;
+    background: #c8d3df;
+    margin: 0 0 26px;
+}
+
+.gateway-ref .gateway-receipt-line {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0 0 25px;
+}
+
+.gateway-ref .gateway-receipt-line small {
+    color: #607c9a;
+    font-size: 13px;
+    line-height: 1.2;
+}
+
+.gateway-ref .gateway-receipt-line strong {
+    font-size: 22px;
+    color: #0075b4;
+    font-weight: 500;
+    line-height: 1.1;
+}
+
+.gateway-ref .gateway-receipt-line sup {
+    font-size: 11px;
+    vertical-align: top;
+}
+
+.gateway-ref .gateway-receipt-line b {
+    font-size: 14px;
+    line-height: 1.3;
+    color: #111927;
+    font-weight: 400;
+    overflow-wrap: anywhere;
+}
+
+.gateway-ref .gateway-form {
+    min-width: 0;
+    padding: 0;
+}
+
+.gateway-ref .gateway-steps {
+    display: none;
+}
+
+.gateway-ref .gateway-stage h1 {
+    font-size: 20px;
+    font-weight: 400;
+    text-align: center;
+    margin: 1px 0 24px;
+    line-height: 1.4;
+    color: #101821;
+}
+
+.gateway-ref .gateway-tab {
+    margin: 0 0 23px;
+    padding: 10px 0 13px;
+    min-height: 43px;
+    text-align: center;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    border-bottom: 2px solid #067bbd;
+}
+
+.gateway-ref .gateway-field {
+    margin: 0 0 15px;
+}
+
+.gateway-ref .gateway-field label {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 12px;
+    line-height: 16px;
+    color: #142033;
+    font-weight: 400;
+}
+
+.gateway-ref .gateway-field input {
+    box-sizing: border-box;
+    width: 100%;
+    height: 35px;
+    border: 1px solid #bfcedf;
+    border-radius: 2px;
+    padding: 0 14px;
+    outline: 0;
+    font-size: 13px;
+    color: #1d2634;
+    background: #fff;
+}
+
+.gateway-ref .gateway-field input:focus {
+    border-color: #087fc3;
+    box-shadow: 0 0 0 2px rgba(0, 127, 194, .1);
+}
+
+.gateway-ref .gateway-field input::placeholder {
+    color: #b3c4d8;
+}
+
+.gateway-ref .gateway-field-compact {
+    margin-bottom: 14px;
+}
+
+.gateway-ref .gateway-field-compact input {
+    width: 198px;
+}
+
+.gateway-ref .gateway-help-bubble {
+    display: inline-grid;
+    place-items: center;
+    background: #202a33;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: bold;
+    width: 12px;
+    height: 12px;
+    vertical-align: middle;
+}
+
+.gateway-ref .gateway-input-bank {
+    position: relative;
+}
+
+.gateway-ref .gateway-input-bank input {
+    border-color: #087fc2;
+    padding-right: 99px;
+}
+
+.gateway-ref .gateway-inline-brand {
+    position: absolute;
+    right: 9px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+    line-height: 1;
+    color: #006fa9;
+    font-weight: 900;
+    pointer-events: none;
+}
+
+.gateway-ref .gateway-promo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 17px 0 0;
+    padding: 14px 0;
+    min-height: 63px;
+    box-sizing: border-box;
+    border-top: 1px dashed #e8eef2;
+    border-bottom: 1px dashed #e8eef2;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.gateway-ref .gateway-promo b {
+    font-weight: 500;
+}
+
+.gateway-ref .gateway-promo span {
+    background: #f5f7f9;
+    border-radius: 3px;
+    font-size: 12px;
+    padding: 9px 10px;
+    color: #5e748e;
+    white-space: nowrap;
+}
+
+.gateway-ref .gateway-terms-details {
+    border: 0;
+}
+
+.gateway-ref .gateway-terms {
+    padding: 20px 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #008ccc;
+    text-decoration: underline;
+    cursor: pointer;
+    list-style: none;
+}
+
+.gateway-ref .gateway-terms::-webkit-details-marker {
+    display: none;
+}
+
+.gateway-ref .gateway-terms span {
+    text-decoration: none;
+    color: #00a2de;
+    font-size: 20px;
+    line-height: 1;
+}
+
+.gateway-ref .gateway-terms-details p {
+    font-size: 12px;
+    color: #51677f;
+    line-height: 1.5;
+    margin: 0 0 14px;
+}
+
+.gateway-ref .gateway-explain {
+    box-sizing: border-box;
+    border-radius: 3px;
+    background: #fceaea;
+    color: #9c1313;
+    padding: 13px 12px;
+    line-height: 1.5;
+    font-size: 12px;
+}
+
+.gateway-ref .gateway-dev-options {
+    padding-top: 8px;
+    color: #8798a9;
+    font-size: 10px;
+}
+
+.gateway-ref .gateway-dev-options summary {
+    cursor: pointer;
+}
+
+.gateway-ref .gateway-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 21px 0 0;
+}
+
+.gateway-ref .gateway-btn {
+    min-height: 41px;
+    padding: 10px 11px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.gateway-ref .gateway-primary {
+    background: #087cad;
+    color: white;
+}
+
+.gateway-ref .gateway-secondary {
+    background: #f4f6f8;
+    color: #142134;
+}
+
+.gateway-ref .gateway-footer {
+    min-height: 71px;
+    box-sizing: border-box;
+    border-top: 1px solid #e9edf1;
+    padding: 0 23px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.gateway-ref .gateway-footer-contact {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #0886c4;
+    font-size: 13px;
+    text-decoration: underline;
+}
+
+.gateway-ref .gateway-mail-icon {
+    display: grid;
+    place-items: center;
+    border: 1px solid #e5ebf1;
+    border-radius: 5px;
+    color: #5a7189;
+    width: 36px;
+    height: 37px;
+    font-size: 19px;
+    text-decoration: none;
+}
+
+.gateway-ref .gateway-footer-trust {
+    font-size: 11px;
+    color: #657c91;
+    white-space: nowrap;
+}
+
+.gateway-ref .gateway-message {
+    margin: 11px 0 0;
+}
+
+.gateway-ref .gateway-message[hidden] {
+    display: none;
+}
+
+.gateway-ref .gateway-otp-card,
+.gateway-ref .gateway-consent-card {
+    border-radius: 4px;
+}
+
+@media(max-width:900px) {
+    body.third-party .gateway-mock.gateway-ref.wallet-page {
+        padding: 0 12px 20px !important;
+    }
+
+    .gateway-ref .gateway-layout {
+        grid-template-columns: minmax(240px, 40%) minmax(0, 1fr);
+        gap: 24px;
+        padding: 22px 20px;
+        min-height: 0;
+    }
+
+    .gateway-ref .gateway-receipt {
+        width: auto;
+    }
+
+    .gateway-ref .gateway-header {
+        padding: 0 18px;
+    }
+
+    .gateway-ref .gateway-footer {
+        padding: 0 18px;
+    }
+}
+
+@media(max-width:680px) {
+    body.third-party .gateway-mock.gateway-ref.wallet-page {
+        padding: 0 !important;
+    }
+
+    .gateway-ref .gateway-utility {
+        padding: 0 16px;
+    }
+
+    .gateway-ref .gateway-shell {
+        border-radius: 0;
+    }
+
+    .gateway-ref .gateway-header {
+        min-height: 76px;
+        padding: 12px 16px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .gateway-ref .gateway-payment-brand small {
+        font-size: 6px;
+    }
+
+    .gateway-ref .gateway-payment-brand strong {
+        font-size: 13px;
+    }
+
+    .gateway-ref .gateway-bank-logo strong {
+        font-size: 14px;
+    }
+
+    .gateway-ref .gateway-head-right {
+        margin-left: auto;
+    }
+
+    .gateway-ref .gateway-timer small {
+        font-size: 10px;
+    }
+
+    .gateway-ref .gateway-layout {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 16px;
+    }
+
+    .gateway-ref .gateway-receipt {
+        width: 100%;
+        min-height: 0;
+        padding: 20px;
+    }
+
+    .gateway-ref .gateway-receipt h2 {
+        white-space: normal;
+        font-size: 19px;
+    }
+
+    .gateway-ref .gateway-receipt-line {
+        display: inline-flex;
+        vertical-align: top;
+        width: 48%;
+        margin: 0 1% 18px 0;
+    }
+
+    .gateway-ref .gateway-receipt-line:last-child {
+        width: 100%;
+    }
+
+    .gateway-ref .gateway-footer {
+        padding: 15px 16px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .gateway-ref .gateway-footer-trust {
+        white-space: normal;
+    }
+}
+
+@media(max-width:370px) {
+    .gateway-ref .gateway-timer small {
+        display: none;
+    }
+
+    .gateway-ref .gateway-promo {
+        gap: 6px;
+    }
+
+    .gateway-ref .gateway-promo span {
+        font-size: 10px;
+        padding: 8px 7px;
+    }
+
+    .gateway-ref .gateway-inline {
+        flex-direction: column;
+    }
+}
+
+/* Pixel alignment refinements for screenshot reference (desktop) */
+@media(min-width:681px) {
+    .gateway-ref .gateway-form {
+        padding-right: 20px;
+    }
+
+    .gateway-ref .gateway-field label {
+        line-height: 15px;
+        margin-bottom: 4px;
+    }
+
+    .gateway-ref .gateway-field-compact {
+        margin-bottom: 0;
+    }
+
+    .gateway-ref .gateway-promo {
+        margin-top: 14px;
+    }
+
+    .gateway-ref .gateway-terms {
+        padding-top: 24px;
+        padding-bottom: 23px;
+    }
+}

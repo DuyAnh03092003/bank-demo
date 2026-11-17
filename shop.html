@@ -12,12 +12,24 @@
 <footer class="footer" id="shopFooter"><div class="footer-inner"><div><div class="shop-footer-brand">MARTI</div><p>Nền tảng mua sắm trực tuyến</p></div><div>Trung tâm hỗ trợ<br><strong>Hỗ trợ khách hàng 24/7</strong></div><div>Điều khoản　|　Chính sách mua hàng　|　Hỗ trợ</div></div></footer>
 <div class="overlay hidden" id="cartOverlay" role="dialog" aria-modal="true" aria-labelledby="cartTitle"><div class="dialog"><div class="dialog-head"><h2 id="cartTitle">Giỏ hàng</h2><button class="close" id="closeCart" aria-label="Đóng">×</button></div><div class="dialog-body"><div id="cartItems"></div><div class="total-line"><span>Tổng cộng</span><span id="cartTotal">0 ₫</span></div><h3>Phương thức thanh toán</h3><label class="pay-method selected"><input type="radio" name="pay" value="shopeepay" checked><span class="spay-icon">V</span><span><strong>VNPAY (Mô phỏng)</strong><br><small>Kiểm tra Consent liên kết ví · Không giao dịch thật</small></span></label><label class="pay-method"><input type="radio" name="pay" value="bank"><svg aria-hidden="true" viewBox="0 0 32 32" width="28" height="28" fill="none" stroke="#0757a6" stroke-width="1.8"><path d="M3 11 16 4l13 7H3Zm2 3h22M6 14v10m6-10v10m8-10v10m6-10v10M4 26h24v3H4z"/></svg><span><strong>Tài khoản Eximbank</strong><br><small>Thanh toán qua tài khoản ngân hàng</small></span></label><!-- INTEGRATION SLOT: check DataTrust consent for wallet-link purpose here, before opening the wallet link flow. --><button class="pay-submit" id="checkoutBtn">Tiếp tục thanh toán</button><div class="secure-copy">Thông tin thanh toán được bảo vệ trong suốt quá trình xử lý.</div></div></div></div>
 <dialog id="paymentResultDialog" class="poc-dialog payment-result-dialog" aria-labelledby="paymentResultTitle"><div class="payment-result-symbol" id="paymentResultSymbol"></div><h2 id="paymentResultTitle"></h2><p id="paymentResultDescription"></p><small>Tự động đóng sau 5 giây</small></dialog>
-<div class="wallet-page gateway-mock hidden" id="walletPage" role="region" aria-label="Cổng thanh toán mô phỏng">
+<div class="wallet-page gateway-mock gateway-ref hidden" id="walletPage" role="region" aria-label="Cổng thanh toán Eximbank POC mô phỏng">
+  <nav class="gateway-utility" aria-label="Điều hướng thanh toán">
+    <button id="walletBack" class="gateway-utility-back" type="button"><span aria-hidden="true" class="gateway-back-circle">‹</span> Quay lại</button>
+    <span class="gateway-language">🇻🇳 &nbsp; Vi</span>
+  </nav>
   <div class="gateway-shell">
-    <div class="gateway-demo-ribbon" role="status">MÔ PHỎNG POC · KHÔNG PHẢI CỔNG THANH TOÁN VNPAY CHÍNH THỨC · KHÔNG NHẬP THÔNG TIN THẺ THẬT</div>
     <header class="gateway-header">
-      <div class="gateway-brand"><span class="gateway-brand-symbol" aria-hidden="true">◆</span><div><strong>PAYMENT POC</strong><small>Giao diện tham khảo bố cục VNPAY Sandbox</small></div></div>
-      <div class="gateway-head-right"><span class="gateway-bank-mark">EXIMBANK <b>POC</b></span><div class="gateway-timer"><small>Phiên giao dịch còn</small><strong id="payCountdown">15:00</strong></div></div>
+      <div class="gateway-brand" aria-label="Cổng thanh toán mô phỏng cho Eximbank">
+        <div class="gateway-bank-logo"><strong>EXIMBANK</strong><small>POC BANK</small></div>
+        <span class="gateway-logo-divider" aria-hidden="true"></span>
+        <div class="gateway-payment-brand">
+          <span class="gateway-brand-symbol" aria-hidden="true"><i></i></span>
+          <div><small>CỔNG THANH TOÁN THỬ NGHIỆM</small><strong>PAYMENT <b>DEMO</b></strong></div>
+        </div>
+      </div>
+      <div class="gateway-head-right">
+        <div class="gateway-timer"><small>Giao dịch hết hạn sau</small><strong id="payCountdown"><span id="payCountdownMinute">15</span><i>:</i><span id="payCountdownSecond">00</span></strong></div>
+      </div>
     </header>
     <div class="gateway-layout">
       <aside class="gateway-receipt">
@@ -28,54 +40,55 @@
         <div class="gateway-receipt-line"><small>Phí giao dịch</small><b>0 VND</b></div>
         <div class="gateway-receipt-line"><small>Mã đơn hàng</small><b id="payOrderId">—</b></div>
         <div class="gateway-receipt-line"><small>Nhà cung cấp</small><b>MARTI Online Shop</b></div>
-        <p class="gateway-receipt-note">Tất cả thông tin giao dịch trên trang này đều là dữ liệu mô phỏng.</p>
       </aside>
       <section class="gateway-form" aria-live="polite">
-        <div class="gateway-steps"><span class="is-current" data-gstep="account">01 · Tài khoản</span><span data-gstep="consent">02 · Xác nhận</span><span data-gstep="payment">03 · Hoàn tất</span></div>
+        <div class="gateway-steps" aria-hidden="true"><span class="is-current" data-gstep="account">01 · Tài khoản</span><span data-gstep="consent">02 · Xác nhận</span><span data-gstep="payment">03 · Hoàn tất</span></div>
         <div class="gateway-stage" id="payStageAccount">
           <h1>Thanh toán qua Ngân hàng Eximbank</h1>
-          <div class="gateway-tab">Tài khoản ngân hàng POC</div>
-          <p class="gateway-help">Nhập thông tin tài khoản đã đăng ký trên website Eximbank POC để kiểm tra sự đồng ý chia sẻ dữ liệu với ví điện tử.</p>
-          <div class="gateway-field"><label for="payAccount">Số tài khoản Eximbank POC</label><input id="payAccount" type="text" inputmode="numeric" maxlength="32" autocomplete="off" placeholder="Nhập số tài khoản POC" /></div>
-          <div class="gateway-field"><label for="payPhone">Số điện thoại đăng ký POC</label><input id="payPhone" type="tel" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="Nhập số điện thoại đăng ký" /></div>
-          <label class="gateway-toggle"><input type="checkbox" id="payDemoExpired" /> <span>POC: Giả lập trường hợp cần xin lại sự đồng ý</span></label>
-          <div class="gateway-explain">Trang này chỉ tra cứu <b>PNR và trạng thái Consent</b> qua DataTrust. Không kiểm tra số dư, không nhận thông tin thẻ, không thực hiện chuyển tiền.</div>
-          <div class="gateway-actions"><button id="walletCancel" class="gateway-btn gateway-secondary" type="button">Hủy giao dịch</button><button id="payCheck" class="gateway-btn gateway-primary" type="button">Kiểm tra và tiếp tục</button></div>
+          <div class="gateway-tab">Tài khoản nội địa · Test</div>
+          <div class="gateway-field"><label for="payAccount">Số tài khoản</label><div class="gateway-input-bank"><input id="payAccount" type="text" inputmode="numeric" maxlength="32" autocomplete="off" placeholder="Nhập số tài khoản thử nghiệm" /><span class="gateway-inline-brand">EXIMBANK ◈</span></div></div>
+          <div class="gateway-field"><label for="payHolderName">Tên chủ tài khoản</label><input id="payHolderName" type="text" maxlength="80" autocomplete="off" placeholder="Nhập tên chủ tài khoản (không dấu)" /></div>
+          <div class="gateway-field gateway-field-compact"><label for="payPhone">Số điện thoại đăng ký <span class="gateway-help-bubble" title="Dùng để đối chiếu chủ thể trong DataTrust">i</span></label><input id="payPhone" type="tel" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="0xxxxxxxxx" /></div>
+          <div class="gateway-promo"><b>Mã khuyến mại</b><span>▣ &nbsp; Chọn hoặc nhập mã</span></div>
+          <details class="gateway-terms-details"><summary class="gateway-terms"><span aria-hidden="true">▤</span> Điều kiện sử dụng dịch vụ</summary><p>Đây là cổng giao dịch mô phỏng dùng riêng cho POC Eximbank – DataTrust. Không chấp nhận thẻ ngân hàng hoặc OTP thật, không xử lý tiền thật.</p></details>
+          <div class="gateway-explain"><b>⚠ &nbsp; Lưu ý:</b> Chỉ sử dụng số tài khoản và số điện thoại POC đã đăng ký tại hệ thống Eximbank thử nghiệm. Không nhập thông tin thẻ hoặc OTP ngân hàng thật.</div>
+          <details class="gateway-dev-options"><summary>Tùy chọn kiểm thử Consent</summary><label class="gateway-toggle"><input type="checkbox" id="payDemoExpired" /> <span>Giả lập trường hợp cần xin lại sự đồng ý</span></label></details>
+          <div class="gateway-actions"><button id="walletCancel" class="gateway-btn gateway-secondary" type="button">Hủy thanh toán</button><button id="payCheck" class="gateway-btn gateway-primary" type="button">Tiếp tục</button></div>
         </div>
         <div class="gateway-stage hidden" id="payStageConsent">
           <h1>Xác nhận chia sẻ dữ liệu tài khoản</h1>
-          <div class="gateway-tab">Xác thực thử nghiệm · Eximbank POC</div>
+          <div class="gateway-tab">Xác thực Eximbank POC</div>
           <p class="gateway-help" id="payConsentReason">Tài khoản chưa có Consent hợp lệ. Vui lòng xác nhận theo luồng mô phỏng.</p>
           <div class="gateway-account-summary"><span>Chủ tài khoản</span><strong id="paySubjectName">—</strong><span>STK POC</span><strong id="payMaskedAccount">—</strong></div>
           <div class="gateway-otp-card">
-            <h3>Bước 1 · OTP thử nghiệm</h3>
-            <p>Mã OTP chỉ tạo trong trình duyệt cho mục đích demo; không được gửi SMS hoặc dùng để xác thực ngân hàng thật.</p>
+            <h3>Xác nhận bằng OTP thử nghiệm</h3>
+            <p>OTP được tạo và đối chiếu ngay trên trình duyệt, chỉ dùng để minh họa luồng xác thực.</p>
             <button class="gateway-btn gateway-outline" id="payCreateOtp" type="button">Tạo OTP thử nghiệm</button>
             <div class="gateway-test-inbox hidden" id="payOtpInbox"><small>HỘP THƯ OTP MÔ PHỎNG</small><strong id="payOtpDemo">••••••</strong><span id="payOtpExpiry">Có hiệu lực 180 giây</span></div>
-            <div class="gateway-field"><label for="payOtpInput">Nhập mã OTP (6 số)</label><div class="gateway-inline"><input id="payOtpInput" type="text" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="••••••" /><button id="payVerifyOtp" class="gateway-btn gateway-outline" type="button">Xác nhận OTP</button></div></div>
+            <div class="gateway-field"><label for="payOtpInput">Nhập mã OTP (6 số)</label><div class="gateway-inline"><input id="payOtpInput" type="text" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="Nhập mã OTP thử nghiệm" /><button id="payVerifyOtp" class="gateway-btn gateway-outline" type="button">Xác nhận OTP</button></div></div>
             <p class="gateway-otp-status" id="payOtpStatus">Chưa xác thực OTP.</p>
           </div>
           <div class="gateway-consent-card">
-            <h3>Bước 2 · Đồng ý chia sẻ dữ liệu</h3>
-            <p>Tôi đồng ý cho Eximbank chia sẻ các thông tin tài khoản ngân hàng cần thiết với đơn vị ví điện tử mô phỏng để phục vụ việc xác minh, thiết lập và duy trì liên kết tài khoản trong phạm vi POC.</p>
-            <small>Mục đích: PUR_00011 · Dữ liệu được ghi nhận trên DataTrust</small>
+            <h3>Đồng ý chia sẻ dữ liệu với ví điện tử</h3>
+            <p>Tôi đồng ý cho Eximbank chia sẻ thông tin tài khoản cần thiết với ví điện tử mô phỏng để xác minh, thiết lập và duy trì liên kết tài khoản trong phạm vi POC.</p>
+            <small>Mục đích: PUR_00011 · Sự đồng ý được ghi nhận trong DataTrust</small>
             <label class="gateway-agree"><input type="checkbox" id="payAgree" disabled /><span>Tôi đã đọc và đồng ý với mục đích chia sẻ dữ liệu nêu trên.</span></label>
           </div>
           <div class="gateway-actions"><button id="payConsentBack" class="gateway-btn gateway-secondary" type="button">Quay lại</button><button id="paySubmitConsent" class="gateway-btn gateway-primary" type="button" disabled>Đồng ý và tiếp tục</button></div>
         </div>
         <div class="gateway-stage hidden" id="payStagePayment">
-          <h1>Xác nhận giao dịch thử nghiệm</h1>
+          <h1>Xác nhận thanh toán thử nghiệm</h1>
           <div class="gateway-tab">Consent được DataTrust xác nhận</div>
           <div class="gateway-result-mark">✓</div>
           <h3 class="gateway-centered">Đủ điều kiện tiếp tục</h3>
-          <p class="gateway-help gateway-centered">Sự đồng ý chia sẻ dữ liệu tài khoản đã được kiểm tra hợp lệ. Việc thanh toán tiếp theo chỉ là mô phỏng trên Frontend.</p>
+          <p class="gateway-help gateway-centered">Consent chia sẻ dữ liệu tài khoản hợp lệ. Giao dịch tiếp theo chỉ mô phỏng trên Frontend, không xử lý tiền thật.</p>
           <div class="gateway-payment-summary"><span>Ngân hàng</span><b>Eximbank POC</b><span>Tài khoản</span><b id="payConfirmAccount">—</b><span>Số tiền</span><b id="payConfirmAmount">—</b></div>
           <div class="gateway-actions"><button id="payPaymentBack" class="gateway-btn gateway-secondary" type="button">Quay lại</button><button id="payFinalize" class="gateway-btn gateway-primary" type="button">Xác nhận thanh toán POC</button></div>
         </div>
         <p class="gateway-message" id="payMessage" role="status" aria-live="polite"></p>
       </section>
     </div>
-    <footer class="gateway-footer"><button id="walletBack" type="button">← Trở về cửa hàng</button><span>Payment Integration Sandbox · DEMO ONLY</span><span>DataTrust Consent POC</span></footer>
+    <footer class="gateway-footer"><span class="gateway-footer-contact"><span class="gateway-mail-icon" aria-hidden="true">✉</span> <span>Hỗ trợ kiểm thử POC</span></span><span class="gateway-footer-trust">◈ &nbsp; Demo only &nbsp;·&nbsp; DataTrust Consent POC</span></footer>
   </div>
 </div>
 <div id="toast" class="toast hidden" role="status"></div>

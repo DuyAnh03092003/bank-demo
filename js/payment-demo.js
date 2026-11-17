@@ -65,7 +65,10 @@
     const remaining = Math.max(0, Math.ceil((state.deadline - Date.now()) / 1000));
     const mm = String(Math.floor(remaining / 60)).padStart(2, '0');
     const ss = String(remaining % 60).padStart(2, '0');
-    $('payCountdown').textContent = `${mm}:${ss}`;
+    if ($('payCountdownMinute') && $('payCountdownSecond')) {
+      $('payCountdownMinute').textContent = mm;
+      $('payCountdownSecond').textContent = ss;
+    } else { $('payCountdown').textContent = `${mm}:${ss}`; }
     if (state.otp && !state.otpVerified) {
       $('payOtpExpiry').textContent = 'Còn ' + Math.max(0, Math.ceil((state.otpExpires - Date.now()) / 1000)) + ' giây';
     }
@@ -78,6 +81,7 @@
     const session = D.session?.();
     if (session?.pnr) $('payAccount').value = session.pnr.replace(window.POC_CONFIG?.PNR_PREFIX || '', '');
     if (session?.subject?.subject_phone) $('payPhone').value = session.subject.subject_phone;
+    if (session?.subject?.subject_name && $('payHolderName')) $('payHolderName').value = session.subject.subject_name;
   };
   function start({ amount }) {
     if (state.clock) clearInterval(state.clock);
@@ -86,6 +90,7 @@
     state.pnr = ''; state.phone = ''; state.subject = null;
     state.consentVerified = false; state.deadline = Date.now() + 15 * 60 * 1000;
     $('payAccount').value = ''; $('payPhone').value = '';
+    if ($('payHolderName')) $('payHolderName').value = '';
     $('payDemoExpired').checked = false;
     resetOtp(); fromSession();
     $('payAmount').innerHTML = new Intl.NumberFormat('vi-VN').format(state.amount) + '<sup>VND</sup>';
@@ -230,5 +235,6 @@
   $('payFinalize').addEventListener('click', finalize);
   $('payAccount').addEventListener('input', () => { state.consentVerified = false; setMessage(); });
   $('payPhone').addEventListener('input', () => { state.consentVerified = false; setMessage(); });
+  $('payHolderName')?.addEventListener('input', () => { state.consentVerified = false; setMessage(); });
   window.POC_PAYMENT = { start, close };
 })();
