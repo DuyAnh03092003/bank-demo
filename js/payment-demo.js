@@ -222,21 +222,14 @@
     } finally { setBusy(false); }
   }
   async function finalize() {
-    if (state.busy || !state.consentVerified) return;
-    setBusy(true); setMessage('Đang kiểm tra lại hiệu lực Consent trước khi mô phỏng thanh toán...', 'info');
-    try {
-      const fresh = await getSubject();
-      if (!D.canLink(fresh)) {
-        state.consentVerified = false;
-        showStage('account');
-        throw new Error('Consent hiện không còn hiệu lực. Hãy kiểm tra và xin đồng ý lại.');
-      }
-      const ref = 'MOCK-PAY-' + randomRef();
-      close();
-      window.showPaymentResult?.(true, `Giao dịch ${ref} được MÔ PHỎNG thành công. Không có thanh toán hoặc trích tiền thật.`);
-    } catch (error) { setMessage(error.message, 'error'); }
-    finally { setBusy(false); }
-  }
+  if (state.busy || !state.consentVerified) return;
+  const ref = 'MOCK-PAY-' + randomRef();
+  close();
+  window.showPaymentResult?.(
+    true,
+    `Giao dịch ${ref} được MÔ PHỎNG thành công. Không có thanh toán hoặc trích tiền thật.`
+  );
+}
   $('payCheck').addEventListener('click', checkConsent);
   $('payOtpInput').addEventListener('input', setConsentSubmitEnabled);
   $('payOtpInput').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); submitConsent(); } });
