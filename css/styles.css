@@ -3854,3 +3854,635 @@ button:disabled {
     font-weight: 600;
     margin-left: 6px;
 }
+
+body.third-party .gateway-mock.wallet-page {
+    place-items: start center;
+    overflow-y: auto;
+    padding: 34px 16px;
+    z-index: 90;
+    background: #f2f4f7;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.gateway-shell {
+    width: min(960px, 100%);
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 16px rgba(20, 32, 55, .11);
+    overflow: hidden;
+    color: #0c1727;
+}
+
+.gateway-demo-ribbon {
+    background: #fff4da;
+    color: #825100;
+    text-align: center;
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .02em;
+    line-height: 1.5;
+}
+
+.gateway-header {
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 26px;
+    border-bottom: 1px solid #e8edf3;
+    gap: 20px;
+}
+
+.gateway-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.gateway-brand-symbol {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(140deg, #1367ad 50%, #e42a40 50%);
+    color: white;
+    font-size: 25px;
+    border-radius: 7px;
+    transform: rotate(-9deg);
+}
+
+.gateway-brand strong {
+    display: block;
+    color: #006ca6;
+    font-size: 19px;
+    letter-spacing: -.04em;
+}
+
+.gateway-brand small {
+    display: block;
+    color: #75849a;
+    font-size: 10px;
+    margin-top: 3px;
+}
+
+.gateway-head-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.gateway-bank-mark {
+    color: #0066a6;
+    font-weight: 800;
+    font-style: italic;
+    font-size: 20px;
+    white-space: nowrap;
+}
+
+.gateway-bank-mark b {
+    font-size: 10px;
+    font-style: normal;
+    border: 1px solid #b3d6ef;
+    background: #edf7ff;
+    border-radius: 3px;
+    padding: 3px;
+    vertical-align: middle;
+}
+
+.gateway-timer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.gateway-timer small {
+    color: #687994;
+    font-size: 12px;
+}
+
+.gateway-timer strong {
+    background: #202933;
+    color: #fff;
+    border-radius: 5px;
+    padding: 9px 10px;
+    font-size: 18px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 1px;
+}
+
+.gateway-layout {
+    display: grid;
+    grid-template-columns: 39% 61%;
+    padding: 24px;
+    gap: 0;
+    align-items: start;
+}
+
+.gateway-receipt {
+    background: #f5f7fa;
+    border-radius: 4px;
+    padding: 26px 25px;
+    margin-right: 34px;
+    min-height: 430px;
+}
+
+.gateway-receipt h2 {
+    color: #101924;
+    font-size: 21px;
+    margin: 0 0 20px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.gateway-receipt h2 span {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.gateway-receipt-rule {
+    height: 1px;
+    background: #c5d1df;
+    margin-bottom: 26px;
+}
+
+.gateway-receipt-line {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 26px;
+}
+
+.gateway-receipt-line small {
+    font-size: 13px;
+    color: #53718f;
+}
+
+.gateway-receipt-line strong {
+    color: #0079b7;
+    font-weight: 500;
+    font-size: 23px;
+}
+
+.gateway-receipt-line sup {
+    font-size: 11px;
+    vertical-align: top;
+}
+
+.gateway-receipt-line b {
+    font-size: 15px;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+}
+
+.gateway-receipt-note {
+    font-size: 11px;
+    color: #8190a0;
+    line-height: 1.6;
+    padding-top: 5px;
+}
+
+.gateway-form {
+    padding: 0 12px 6px 0;
+    min-width: 0;
+}
+
+.gateway-steps {
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
+    border-bottom: 1px solid #e8eef5;
+    padding-bottom: 16px;
+    margin-bottom: 25px;
+}
+
+.gateway-steps span {
+    font-size: 12px;
+    color: #94a0af;
+    text-align: center;
+}
+
+.gateway-steps .is-current {
+    color: #0577b6;
+    font-weight: 800;
+}
+
+.gateway-stage h1 {
+    font-size: 21px;
+    line-height: 1.35;
+    font-weight: 500;
+    text-align: center;
+    color: #111a27;
+    margin: 5px 0 24px;
+}
+
+.gateway-tab {
+    font-weight: 700;
+    text-align: center;
+    border-bottom: 2px solid #0084c7;
+    padding: 13px 0;
+    margin-bottom: 22px;
+}
+
+.gateway-help {
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 0 0 22px;
+}
+
+.gateway-field {
+    margin: 16px 0 18px;
+}
+
+.gateway-field label {
+    display: block;
+    font-size: 13px;
+    color: #182433;
+    margin: 0 0 8px;
+    font-weight: 500;
+}
+
+.gateway-field input {
+    font: inherit;
+    width: 100%;
+    height: 43px;
+    border: 1px solid #b9c9db;
+    border-radius: 3px;
+    background: #fff;
+    color: #162333;
+    padding: 0 13px;
+    outline: none;
+}
+
+.gateway-field input::placeholder {
+    color: #aabed4;
+}
+
+.gateway-field input:focus {
+    border-color: #0084c7;
+    box-shadow: 0 0 0 2px #0084c71e;
+}
+
+.gateway-field input:disabled {
+    background: #f2f5f7;
+}
+
+.gateway-toggle {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 12px;
+    margin: 18px 0 15px;
+    color: #626e79;
+}
+
+.gateway-toggle input {
+    width: 16px;
+    height: 16px;
+    accent-color: #007bb5;
+}
+
+.gateway-explain {
+    padding: 12px 15px;
+    border-radius: 4px;
+    background: #fff1f0;
+    color: #a63031;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.gateway-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 23px;
+}
+
+.gateway-btn {
+    min-height: 45px;
+    padding: 10px 13px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: inherit;
+    border: 1px solid transparent;
+}
+
+.gateway-btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.gateway-primary {
+    background: #087cad;
+    color: #fff;
+}
+
+.gateway-primary:hover:not(:disabled) {
+    background: #056d98;
+}
+
+.gateway-secondary {
+    background: #f4f6f8;
+    color: #243243;
+}
+
+.gateway-secondary:hover:not(:disabled) {
+    background: #e8eef3;
+}
+
+.gateway-outline {
+    background: #fff;
+    color: #057cad;
+    border-color: #b1d4e9;
+}
+
+.gateway-inline {
+    display: flex;
+    gap: 9px;
+}
+
+.gateway-inline input {
+    flex: 1;
+    min-width: 0;
+}
+
+.gateway-inline button {
+    white-space: nowrap;
+}
+
+.gateway-account-summary,
+.gateway-payment-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 15px;
+    background: #f5f8fb;
+    border-radius: 5px;
+    font-size: 12px;
+    margin: 8px 0 22px;
+}
+
+.gateway-account-summary span,
+.gateway-payment-summary span {
+    color: #687990;
+}
+
+.gateway-account-summary strong,
+.gateway-payment-summary b {
+    color: #152435;
+    text-align: right;
+}
+
+.gateway-otp-card,
+.gateway-consent-card {
+    border: 1px solid #e0e8f0;
+    border-radius: 5px;
+    padding: 17px;
+    margin-bottom: 15px;
+}
+
+.gateway-otp-card h3,
+.gateway-consent-card h3 {
+    font-size: 14px;
+    color: #132b3b;
+    margin: 0 0 8px;
+}
+
+.gateway-otp-card p,
+.gateway-consent-card p {
+    color: #607183;
+    font-size: 12px;
+    line-height: 1.6;
+    margin: 0 0 14px;
+}
+
+.gateway-otp-card .gateway-field {
+    margin-bottom: 8px;
+}
+
+.gateway-otp-card .gateway-btn {
+    min-height: 40px;
+}
+
+.gateway-test-inbox {
+    background: #fff7df;
+    border: 1px dashed #d9ad55;
+    border-radius: 5px;
+    padding: 13px;
+    margin: 13px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.gateway-test-inbox small {
+    color: #806124;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.gateway-test-inbox strong {
+    font-variant-numeric: tabular-nums;
+    font-size: 26px;
+    letter-spacing: 8px;
+    color: #815a13;
+}
+
+.gateway-test-inbox span {
+    font-size: 11px;
+    color: #836528;
+}
+
+.gateway-otp-status {
+    margin: 0 !important;
+    font-size: 11px !important;
+}
+
+.gateway-consent-card small {
+    display: block;
+    color: #57718a;
+    margin-bottom: 12px;
+    font-size: 11px;
+}
+
+.gateway-agree {
+    display: flex;
+    gap: 9px;
+    align-items: flex-start;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #1c2d3c;
+    padding-top: 10px;
+    border-top: 1px dashed #d5e2ed;
+}
+
+.gateway-agree input {
+    margin-top: 2px;
+    accent-color: #0084c7;
+}
+
+.gateway-result-mark {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    margin: 24px auto 12px;
+    color: #0f996b;
+    background: #e1f7ed;
+    font-size: 38px;
+    display: grid;
+    place-items: center;
+}
+
+.gateway-centered {
+    text-align: center;
+}
+
+.gateway-stage h3.gateway-centered {
+    margin-bottom: 12px;
+    font-size: 19px;
+}
+
+.gateway-message {
+    margin: 15px 0 0;
+    font-size: 12px;
+    padding: 10px 12px;
+    border-radius: 4px;
+    background: #eef6fc;
+    color: #076899;
+    line-height: 1.6;
+}
+
+.gateway-message[hidden] {
+    display: none;
+}
+
+.gateway-message[data-tone="error"] {
+    background: #fff0ef;
+    color: #ad3232;
+}
+
+.gateway-message[data-tone="warning"] {
+    background: #fff8e7;
+    color: #935d00;
+}
+
+.gateway-message[data-tone="success"] {
+    background: #ecf9f0;
+    color: #147644;
+}
+
+.gateway-footer {
+    border-top: 1px solid #e9eef2;
+    padding: 17px 26px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    color: #7e8e9f;
+    font-size: 11px;
+}
+
+.gateway-footer button {
+    background: none;
+    border: 0;
+    cursor: pointer;
+    padding: 4px 0;
+    font: inherit;
+    color: #007eaf;
+    text-decoration: underline;
+}
+
+@media(max-width:820px) {
+    .gateway-layout {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 16px;
+    }
+
+    .gateway-receipt {
+        margin: 0;
+        min-height: auto;
+        padding: 18px;
+    }
+
+    .gateway-receipt h2 {
+        font-size: 16px;
+        margin-bottom: 12px;
+    }
+
+    .gateway-receipt-rule {
+        margin-bottom: 14px;
+    }
+
+    .gateway-receipt-line {
+        display: inline-flex;
+        min-width: 45%;
+        margin-bottom: 15px;
+    }
+
+    .gateway-receipt-note {
+        margin: 5px 0 0;
+    }
+
+    .gateway-form {
+        padding: 0;
+    }
+
+    .gateway-header {
+        padding: 15px;
+        flex-wrap: wrap;
+    }
+
+    .gateway-head-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .gateway-footer {
+        padding: 15px;
+        flex-wrap: wrap;
+    }
+}
+
+@media(max-width:440px) {
+    .gateway-shell {
+        border-radius: 0;
+    }
+
+    body.third-party .gateway-mock.wallet-page {
+        padding: 0;
+    }
+
+    .gateway-header {
+        gap: 6px;
+    }
+
+    .gateway-bank-mark {
+        font-size: 15px;
+    }
+
+    .gateway-steps span {
+        font-size: 10px;
+    }
+
+    .gateway-stage h1 {
+        font-size: 18px;
+    }
+
+    .gateway-actions {
+        gap: 8px;
+    }
+
+    .gateway-inline {
+        flex-direction: column;
+    }
+
+    .gateway-timer small {
+        display: none;
+    }
+}

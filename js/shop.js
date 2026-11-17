@@ -55,11 +55,11 @@
   document.querySelectorAll('.pay-method').forEach(label => label.addEventListener('click', () => {
     document.querySelectorAll('.pay-method').forEach(item => item.classList.remove('selected')); label.classList.add('selected'); label.querySelector('input').checked = true;
   }));
-  const closeWallet = () => { $('walletPage').classList.add('hidden'); document.title = 'MARTI | Mua sắm trực tuyến'; };
+  const closeWallet = () => { window.POC_PAYMENT?.close(); $('walletPage').classList.add('hidden'); document.title = 'MARTI | Mua sắm trực tuyến'; };
   $('checkoutBtn').addEventListener('click', () => {
     if (!Object.keys(cart).length) { window.showToast('Vui lòng thêm sản phẩm vào giỏ hàng trước.'); return; }
     const method = document.querySelector('input[name="pay"]:checked').value; $('cartOverlay').classList.add('hidden');
-    if (method === 'shopeepay') { $('walletPage').classList.remove('hidden'); document.title = 'ShopeePay | Liên kết ví'; }
+    if (method === 'shopeepay') { $('walletPage').classList.remove('hidden'); document.title = 'Payment POC | Thanh toán mô phỏng'; window.POC_PAYMENT?.start({ amount: Object.entries(cart).reduce((sum, [id, qty]) => sum + productData.find(p => p.id === id).price * qty, 0) }); }
     else window.showPaymentResult(true, 'Thanh toán qua tài khoản Eximbank được mô phỏng trong POC.');
   });
   $('walletBack').addEventListener('click', closeWallet); $('walletCancel').addEventListener('click', closeWallet);
