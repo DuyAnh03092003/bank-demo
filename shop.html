@@ -22,9 +22,9 @@
       <div class="gateway-brand" aria-label="Cổng thanh toán mô phỏng cho Eximbank">
         <div class="gateway-bank-logo"><strong>EXIMBANK</strong><small>POC BANK</small></div>
         <span class="gateway-logo-divider" aria-hidden="true"></span>
-        <div class="gateway-payment-brand">
-          <span class="gateway-brand-symbol" aria-hidden="true"><i></i></span>
-          <div><small>CỔNG THANH TOÁN THỬ NGHIỆM</small><strong>PAYMENT <b>DEMO</b></strong></div>
+        <div class="gateway-payment-brand gateway-vnpay-reference">
+          <img src="assets/vnpay-logo-reference.png" alt="VNPAY – hình tham chiếu giao diện" width="122" height="41" />
+          <span class="gateway-poc-stamp">POC · MÔ PHỎNG</span>
         </div>
       </div>
       <div class="gateway-head-right">
@@ -55,27 +55,6 @@
           <details class="gateway-dev-options"><summary>Tùy chọn kiểm thử Consent</summary><label class="gateway-toggle"><input type="checkbox" id="payDemoExpired" /> <span>Giả lập trường hợp cần xin lại sự đồng ý</span></label></details>
           <div class="gateway-actions"><button id="walletCancel" class="gateway-btn gateway-secondary" type="button">Hủy thanh toán</button><button id="payCheck" class="gateway-btn gateway-primary" type="button">Tiếp tục</button></div>
         </div>
-        <div class="gateway-stage hidden" id="payStageConsent">
-          <h1>Xác nhận chia sẻ dữ liệu tài khoản</h1>
-          <div class="gateway-tab">Xác thực Eximbank POC</div>
-          <p class="gateway-help" id="payConsentReason">Tài khoản chưa có Consent hợp lệ. Vui lòng xác nhận theo luồng mô phỏng.</p>
-          <div class="gateway-account-summary"><span>Chủ tài khoản</span><strong id="paySubjectName">—</strong><span>STK POC</span><strong id="payMaskedAccount">—</strong></div>
-          <div class="gateway-otp-card">
-            <h3>Xác nhận bằng OTP thử nghiệm</h3>
-            <p>OTP được tạo và đối chiếu ngay trên trình duyệt, chỉ dùng để minh họa luồng xác thực.</p>
-            <button class="gateway-btn gateway-outline" id="payCreateOtp" type="button">Tạo OTP thử nghiệm</button>
-            <div class="gateway-test-inbox hidden" id="payOtpInbox"><small>HỘP THƯ OTP MÔ PHỎNG</small><strong id="payOtpDemo">••••••</strong><span id="payOtpExpiry">Có hiệu lực 180 giây</span></div>
-            <div class="gateway-field"><label for="payOtpInput">Nhập mã OTP (6 số)</label><div class="gateway-inline"><input id="payOtpInput" type="text" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="Nhập mã OTP thử nghiệm" /><button id="payVerifyOtp" class="gateway-btn gateway-outline" type="button">Xác nhận OTP</button></div></div>
-            <p class="gateway-otp-status" id="payOtpStatus">Chưa xác thực OTP.</p>
-          </div>
-          <div class="gateway-consent-card">
-            <h3>Đồng ý chia sẻ dữ liệu với ví điện tử</h3>
-            <p>Tôi đồng ý cho Eximbank chia sẻ thông tin tài khoản cần thiết với ví điện tử mô phỏng để xác minh, thiết lập và duy trì liên kết tài khoản trong phạm vi POC.</p>
-            <small>Mục đích: PUR_00011 · Sự đồng ý được ghi nhận trong DataTrust</small>
-            <label class="gateway-agree"><input type="checkbox" id="payAgree" disabled /><span>Tôi đã đọc và đồng ý với mục đích chia sẻ dữ liệu nêu trên.</span></label>
-          </div>
-          <div class="gateway-actions"><button id="payConsentBack" class="gateway-btn gateway-secondary" type="button">Quay lại</button><button id="paySubmitConsent" class="gateway-btn gateway-primary" type="button" disabled>Đồng ý và tiếp tục</button></div>
-        </div>
         <div class="gateway-stage hidden" id="payStagePayment">
           <h1>Xác nhận thanh toán thử nghiệm</h1>
           <div class="gateway-tab">Consent được DataTrust xác nhận</div>
@@ -89,6 +68,45 @@
       </section>
     </div>
     <footer class="gateway-footer"><span class="gateway-footer-contact"><span class="gateway-mail-icon" aria-hidden="true">✉</span> <span>Hỗ trợ kiểm thử POC</span></span><span class="gateway-footer-trust">◈ &nbsp; Demo only &nbsp;·&nbsp; DataTrust Consent POC</span></footer>
+  </div>
+  <!-- Popup Eximbank POC – opens automatically only when consent is not valid. -->
+  <div class="exim-consent-backdrop hidden" id="payConsentModal" role="dialog" aria-modal="true" aria-labelledby="payConsentTitle">
+    <div class="exim-consent-dialog">
+      <div class="exim-consent-head">
+        <div class="exim-consent-wordmark"><strong>EXIMBANK</strong><span>POC – XÁC NHẬN SỰ ĐỒNG Ý</span></div>
+        <button type="button" id="payConsentClose" class="exim-consent-close" aria-label="Đóng popup">×</button>
+      </div>
+      <div class="exim-consent-body">
+        <h2 id="payConsentTitle">Xác nhận chia sẻ dữ liệu tài khoản</h2>
+        <p class="exim-consent-intro" id="payConsentReason">Khách hàng chưa có sự đồng ý hợp lệ. Vui lòng xác nhận để tiếp tục.</p>
+        <div class="exim-consent-account">
+          <div><span>Chủ tài khoản</span><strong id="paySubjectName">—</strong></div>
+          <div><span>Tài khoản Eximbank POC</span><strong id="payMaskedAccount">—</strong></div>
+        </div>
+        <section class="exim-consent-purpose" aria-label="Nội dung mục đích xin sự đồng ý">
+          <h3>Mục đích xin sự đồng ý</h3>
+          <p>Khách hàng đồng ý cho <b>Eximbank chia sẻ thông tin tài khoản ngân hàng cần thiết với ví điện tử mô phỏng</b>, để ví xác minh, thiết lập và duy trì liên kết tài khoản trong phạm vi dịch vụ được đăng ký.</p>
+          <p>Thông tin trong phạm vi POC gồm: mã tham chiếu tài khoản, tên chủ tài khoản và các thông tin cần thiết để đối chiếu liên kết. Không cấp quyền thanh toán hoặc trích tiền thật.</p>
+          <small>Một mục đích duy nhất: <b>PUR_00011</b> · Ghi nhận sự đồng ý tại DataTrust</small>
+        </section>
+        <div class="exim-consent-otp">
+          <label for="payOtpInput">Mã OTP xác nhận (6 chữ số)</label>
+          <p>Mã OTP <b>giả lập</b> được hiển thị tự động trong thông báo khi mở popup, hiệu lực 3 phút.</p>
+          <div class="exim-consent-otp-row">
+            <input id="payOtpInput" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="off" placeholder="Nhập OTP test" aria-describedby="payOtpStatus" />
+            <span id="payOtpExpiry" class="exim-consent-expiry">180 giây</span>
+          </div>
+          <div class="exim-consent-copy"><span>Mã test để sao chép:</span><input id="payOtpDemo" readonly aria-label="OTP giả lập có thể sao chép" /><button type="button" id="payCopyOtp">Sao chép</button></div>
+          <p class="exim-consent-otp-status" id="payOtpStatus" role="status">Nhập OTP giả lập để xác nhận.</p>
+          <p class="exim-consent-message" id="payConsentMessage" role="alert" hidden></p>
+        </div>
+      </div>
+      <div class="exim-consent-actions">
+        <button type="button" id="payConsentBack" class="exim-consent-cancel">Từ chối / Quay lại</button>
+        <button type="button" id="paySubmitConsent" class="exim-consent-accept" disabled>Đồng ý và xác nhận</button>
+      </div>
+      <p class="exim-consent-disclaimer">MÔ PHỎNG POC – Không nhập OTP SMS hoặc thông tin ngân hàng thật.</p>
+    </div>
   </div>
 </div>
 <div id="toast" class="toast hidden" role="status"></div>

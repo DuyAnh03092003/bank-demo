@@ -33,7 +33,7 @@
   };
   const showStage = stage => {
     state.stage = stage;
-    ['account','consent','payment'].forEach(key => {
+    ['account','payment'].forEach(key => {
       $('payStage' + key[0].toUpperCase() + key.slice(1)).classList.toggle('hidden', key !== stage);
       const n = document.querySelector('[data-gstep="' + key + '"]');
       if (n) n.classList.toggle('is-current', key === stage);
@@ -41,25 +41,37 @@
     setMessage();
     $('walletPage').scrollTo?.({ top: 0, behavior: 'smooth' });
   };
+  const setConsentMessage = (message = '', tone = 'warning') => {
+    const node = $('payConsentMessage');
+    node.textContent = message;
+    node.dataset.tone = tone;
+    node.hidden = !message;
+  };
+  const setConsentSubmitEnabled = () => {
+    $('paySubmitConsent').disabled = state.busy || !state.subject || !/^\d{6}$/.test($('payOtpInput').value.trim());
+  };
   const setBusy = flag => {
     state.busy = flag;
-    for (const id of ['payCheck','payCreateOtp','payVerifyOtp','paySubmitConsent','payFinalize']) {
+    for (const id of ['payCheck','paySubmitConsent','payFinalize']) {
       const el = $(id); if (el) el.disabled = flag;
     }
     if (!flag) {
-      $('paySubmitConsent').disabled = !state.otpVerified || !$('payAgree').checked;
+      setConsentSubmitEnabled();
       $('payFinalize').disabled = !state.consentVerified;
-      $('payVerifyOtp').disabled = state.otpVerified;
     }
   };
   const resetOtp = () => {
     state.otp = null; state.otpExpires = 0; state.attemptsLeft = 5; state.otpVerified = false;
-    $('payOtpInput').value = ''; $('payOtpInput').disabled = false; $('payVerifyOtp').disabled = false;
-    $('payAgree').checked = false;
-    $('payAgree').disabled = true;
-    $('paySubmitConsent').disabled = true;
-    $('payOtpInbox').classList.add('hidden');
-    $('payOtpStatus').textContent = 'Chưa xác thực OTP.';
+    $('payOtpInput').value = ''; $('payOtpInput').disabled = false;
+    $('payOtpDemo').value = '';
+    $('payOtpStatus').textContent = 'Nhập OTP giả lập để xác nhận.';
+    $('payOtpExpiry').textContent = '180 giây';
+    setConsentMessage();
+    setConsentSubmitEnabled();
+  };
+  const closeConsentPopup = () => {
+    $('payConsentModal').classList.add('hidden');
+    resetOtp();
   };
   const timerTick = () => {
     const remaining = Math.max(0, Math.ceil((state.deadline - Date.now()) / 1000));
@@ -92,7 +104,7 @@
     $('payAccount').value = ''; $('payPhone').value = '';
     if ($('payHolderName')) $('payHolderName').value = '';
     $('payDemoExpired').checked = false;
-    resetOtp(); fromSession();
+    closeConsentPopup(); fromSession();
     $('payAmount').innerHTML = new Intl.NumberFormat('vi-VN').format(state.amount) + '<sup>VND</sup>';
     $('payOrderValue').textContent = vnd(state.amount);
     $('payOrderId').textContent = state.orderId;
@@ -102,7 +114,7 @@
   function close() {
     if (state.clock) clearInterval(state.clock);
     state.clock = null;
-    resetOtp();
+    closeConsentPopup();
     state.consentVerified = false;
     $('walletPage').classList.add('hidden');
     document.title = 'MARTI | Mua sắm trực tuyến';
@@ -129,64 +141,70 @@
         showReady();
       } else {
         state.consentVerified = false;
-        resetOtp();
         $('paySubjectName').textContent = state.subject.subject_name || 'Khách hàng Eximbank POC';
         $('payMaskedAccount').textContent = mask(state.pnr);
         $('payConsentReason').textContent = $('payDemoExpired').checked
-          ? 'Chế độ POC: giả lập sự đồng ý cần được cấp lại. Xác thực OTP thử nghiệm trước khi ghi nhận lại Consent.'
-          : 'Mục đích chia sẻ dữ liệu tài khoản với ví chưa có hiệu lực. Xác thực OTP thử nghiệm và xác nhận đồng ý để tiếp tục.';
-        showStage('consent');
+          ? 'Chế độ kiểm thử: sự đồng ý cần được xác nhận lại để tiếp tục.'
+          : 'Chưa có sự đồng ý chia sẻ dữ liệu tài khoản còn hiệu lực. Vui lòng xác nhận theo yêu cầu của Eximbank POC.';
+        openConsentPopup();
       }
     } catch (error) { setMessage(error.message, 'error'); }
     finally { setBusy(false); }
   }
-  function createOtp() {
-    if (state.busy || !state.subject) return;
+  function issueDemoOtp() {
     resetOtp();
     state.otp = randomDigits(6);
     state.otpExpires = Date.now() + 180 * 1000;
-    $('payOtpDemo').textContent = state.otp;
-    $('payOtpInbox').classList.remove('hidden');
-    $('payOtpStatus').textContent = 'Đã tạo OTP POC. Nhập mã trong hộp thư giả lập (hiệu lực 3 phút).';
-    $('payOtpInput').focus();
+    $('payOtpDemo').value = state.otp; // demo only: deliberately copyable test code
+    $('payOtpStatus').textContent = 'Đã phát hành OTP giả lập; vui lòng nhập mã trước khi hết hạn.';
+    // Native alert is intentional, per the POC scenario. Never accept a real bank OTP.
+    window.alert?.('EXIMBANK POC – OTP GIẢ LẬP\n\nMã xác nhận thử nghiệm: ' + state.otp +
+      '\n\nBạn có thể sao chép mã này để nhập vào popup Eximbank.\nKhông sử dụng OTP ngân hàng thật.');
+    $('payOtpInput').focus?.();
+  }
+  function openConsentPopup() {
+    $('payConsentModal').classList.remove('hidden');
+    issueDemoOtp();
   }
   function verifyOtp() {
-    if (state.busy || !state.subject) return;
-    if (!state.otp) return setMessage('Chưa tạo OTP. Hãy nhấn “Tạo OTP thử nghiệm”.', 'warning');
-    if (Date.now() > state.otpExpires) {
-      resetOtp();
-      return setMessage('OTP đã hết hiệu lực. Hãy tạo mã mới.', 'warning');
+    if (!state.subject) return false;
+    if (!state.otp || Date.now() >= state.otpExpires) {
+      issueDemoOtp();
+      setConsentMessage('OTP đã hết hạn. Mã giả lập mới được tạo và hiển thị.', 'warning');
+      return false;
     }
     const input = $('payOtpInput').value.trim();
-    if (!/^\d{6}$/.test(input)) return setMessage('Vui lòng nhập đủ 6 chữ số OTP.', 'warning');
-    if (state.attemptsLeft <= 0) return setMessage('Đã hết lượt thử. Hãy tạo OTP mới.', 'error');
+    if (!/^\d{6}$/.test(input)) {
+      setConsentMessage('Vui lòng nhập đủ 6 chữ số OTP.', 'warning');
+      return false;
+    }
     if (input !== state.otp) {
       state.attemptsLeft--;
-      if (state.attemptsLeft === 0) {
-        resetOtp();
-        return setMessage('Nhập sai 5 lần. Vui lòng tạo OTP khác.', 'error');
+      if (state.attemptsLeft <= 0) {
+        issueDemoOtp();
+        setConsentMessage('Bạn đã nhập sai 5 lần; hệ thống đã cấp mã giả lập mới.', 'warning');
+      } else {
+        setConsentMessage('Mã OTP không đúng. Còn ' + state.attemptsLeft + ' lần thử.', 'warning');
       }
-      $('payOtpStatus').textContent = 'OTP chưa đúng. Còn ' + state.attemptsLeft + ' lần thử.';
-      return setMessage('Mã OTP thử nghiệm không khớp.', 'warning');
+      return false;
     }
     state.otpVerified = true;
-    state.otp = null; // consume code
-    $('payOtpDemo').textContent = 'Đã xác nhận';
-    $('payOtpStatus').textContent = '✓ OTP thử nghiệm hợp lệ. Bạn có thể lựa chọn đồng ý.';
-    $('payAgree').disabled = false;
+    state.otp = null; // OTP is consumed after successful verification
     $('payOtpInput').disabled = true;
-    $('payVerifyOtp').disabled = true;
-    setMessage('Xác thực thử nghiệm thành công. Vui lòng xác nhận mục đích chia sẻ dữ liệu.', 'success');
+    $('payOtpStatus').textContent = '✓ OTP giả lập hợp lệ. Đang ghi nhận sự đồng ý...';
+    setConsentMessage();
+    return true;
   }
   function showReady() {
+    closeConsentPopup();
     $('payConfirmAccount').textContent = mask(state.pnr);
     $('payConfirmAmount').textContent = vnd(state.amount);
     showStage('payment');
     setMessage('DataTrust xác nhận Consent hợp lệ, có thể tiếp tục mô phỏng thanh toán.', 'success');
   }
   async function submitConsent() {
-    if (state.busy || !state.subject || !state.otpVerified || !$('payAgree').checked) return;
-    setBusy(true); setMessage('Đang ghi nhận sự đồng ý vào DataTrust...', 'info');
+    if (state.busy || !state.subject || !verifyOtp()) return;
+    setBusy(true); setConsentMessage('Đang ghi nhận sự đồng ý vào DataTrust...', 'info');
     try {
       const s = state.subject;
       const subject = {
@@ -205,8 +223,12 @@
       state.consentVerified = true;
       $('payDemoExpired').checked = false;
       showReady();
-    } catch (error) { setMessage(error.message, 'error'); }
-    finally { setBusy(false); }
+    } catch (error) {
+      $('payOtpInput').disabled = false;
+      state.otpVerified = false;
+      issueDemoOtp();
+      setConsentMessage(error.message, 'error');
+    } finally { setBusy(false); }
   }
   async function finalize() {
     if (state.busy || !state.consentVerified) return;
@@ -225,12 +247,18 @@
     finally { setBusy(false); }
   }
   $('payCheck').addEventListener('click', checkConsent);
-  $('payCreateOtp').addEventListener('click', createOtp);
-  $('payVerifyOtp').addEventListener('click', verifyOtp);
-  $('payOtpInput').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); verifyOtp(); } });
-  $('payAgree').addEventListener('change', () => { $('paySubmitConsent').disabled = !state.otpVerified || !$('payAgree').checked; });
+  $('payOtpInput').addEventListener('input', setConsentSubmitEnabled);
+  $('payOtpInput').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); submitConsent(); } });
+  $('payCopyOtp').addEventListener('click', async () => {
+    const code = $('payOtpDemo').value;
+    if (!code) return;
+    try { await navigator.clipboard.writeText(code); setConsentMessage('Đã sao chép OTP giả lập.', 'success'); }
+    catch { $('payOtpDemo').focus(); $('payOtpDemo').select(); setConsentMessage('Chọn và sao chép mã OTP trong ô bên cạnh.', 'info'); }
+  });
   $('paySubmitConsent').addEventListener('click', submitConsent);
-  $('payConsentBack').addEventListener('click', () => { resetOtp(); $('payOtpInput').disabled = false; $('payVerifyOtp').disabled = false; showStage('account'); });
+  const cancelConsent = () => { if (!state.busy) closeConsentPopup(); };
+  $('payConsentBack').addEventListener('click', cancelConsent);
+  $('payConsentClose').addEventListener('click', cancelConsent);
   $('payPaymentBack').addEventListener('click', () => showStage('account'));
   $('payFinalize').addEventListener('click', finalize);
   $('payAccount').addEventListener('input', () => { state.consentVerified = false; setMessage(); });

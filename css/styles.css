@@ -5651,3 +5651,346 @@ body.third-party .gateway-mock.gateway-ref.wallet-page.hidden {
         padding-bottom: 23px;
     }
 }
+
+.gateway-ref .gateway-vnpay-reference {
+    gap: 8px;
+    align-items: center;
+}
+
+.gateway-ref .gateway-vnpay-reference img {
+    display: block;
+    width: 122px;
+    height: 41px;
+    object-fit: contain;
+}
+
+.gateway-ref .gateway-poc-stamp {
+    display: inline-block;
+    color: #95410c;
+    background: #fff4dd;
+    border: 1px solid #efc980;
+    padding: 3px 5px;
+    border-radius: 3px;
+    font-size: 9px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.gateway-ref .exim-consent-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(12, 22, 38, .62);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+    padding: 24px 14px;
+    box-sizing: border-box;
+}
+
+.gateway-ref .exim-consent-backdrop.hidden {
+    display: none !important;
+}
+
+.gateway-ref .exim-consent-dialog {
+    position: relative;
+    background: #fff;
+    color: #172a3e;
+    box-shadow: 0 12px 50px rgba(0, 0, 0, .24);
+    border-radius: 10px;
+    width: min(580px, 100%);
+    max-height: calc(100vh - 48px);
+    overflow: auto;
+    font-size: 14px;
+}
+
+.gateway-ref .exim-consent-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    background: #073d85;
+    color: white;
+    padding: 18px 24px;
+}
+
+.gateway-ref .exim-consent-wordmark {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.gateway-ref .exim-consent-wordmark strong {
+    font-size: 21px;
+    font-style: italic;
+    letter-spacing: -.05em;
+}
+
+.gateway-ref .exim-consent-wordmark span {
+    font-size: 10px;
+    letter-spacing: .16em;
+    font-weight: 700;
+}
+
+.gateway-ref .exim-consent-close {
+    font-size: 27px;
+    line-height: 1;
+    border: 0;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+}
+
+.gateway-ref .exim-consent-body {
+    padding: 22px 24px 6px;
+}
+
+.gateway-ref .exim-consent-body h2 {
+    margin: 0 0 9px;
+    font-size: 20px;
+    line-height: 1.35;
+    color: #172a3e;
+}
+
+.gateway-ref .exim-consent-intro {
+    font-size: 13px;
+    color: #62768b;
+    line-height: 1.5;
+    margin: 0 0 16px;
+}
+
+.gateway-ref .exim-consent-account {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.gateway-ref .exim-consent-account>div {
+    background: #f3f6fb;
+    padding: 12px;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.gateway-ref .exim-consent-account span {
+    font-size: 11px;
+    color: #667c95;
+}
+
+.gateway-ref .exim-consent-account strong {
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.gateway-ref .exim-consent-purpose {
+    border: 1px solid #ccdbef;
+    border-left: 4px solid #0878c4;
+    background: #f6faff;
+    padding: 13px 15px;
+    border-radius: 5px;
+    margin-bottom: 18px;
+}
+
+.gateway-ref .exim-consent-purpose h3 {
+    font-size: 14px;
+    color: #084a8b;
+    margin: 0 0 7px;
+}
+
+.gateway-ref .exim-consent-purpose p {
+    font-size: 12px;
+    color: #334a60;
+    line-height: 1.65;
+    margin: 0 0 7px;
+}
+
+.gateway-ref .exim-consent-purpose small {
+    display: block;
+    color: #54728d;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.gateway-ref .exim-consent-otp label {
+    display: block;
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.gateway-ref .exim-consent-otp>p {
+    font-size: 12px;
+    color: #667c94;
+    margin: 0 0 10px;
+    line-height: 1.5;
+}
+
+.gateway-ref .exim-consent-otp-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.gateway-ref #payOtpInput {
+    height: 42px;
+    flex: 1;
+    min-width: 0;
+    border: 1px solid #a9bdd1;
+    border-radius: 5px;
+    padding: 0 12px;
+    font-size: 17px;
+    letter-spacing: .14em;
+    background: white;
+    color: #162a3e;
+    box-sizing: border-box;
+}
+
+.gateway-ref #payOtpInput:focus {
+    outline: 2px solid rgba(0, 117, 196, .25);
+    border-color: #0878c4;
+}
+
+.gateway-ref .exim-consent-expiry {
+    font-size: 11px;
+    color: #70839b;
+    white-space: nowrap;
+}
+
+.gateway-ref .exim-consent-copy {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin: 10px 0 0;
+    flex-wrap: wrap;
+    font-size: 11px;
+    color: #647f9c;
+}
+
+.gateway-ref .exim-consent-copy input {
+    font-size: 12px;
+    border: 1px dashed #d8a84a;
+    border-radius: 4px;
+    background: #fff8e8;
+    color: #8b5613;
+    letter-spacing: .13em;
+    font-weight: 800;
+    max-width: 110px;
+    padding: 6px 9px;
+}
+
+.gateway-ref .exim-consent-copy button {
+    border: 0;
+    border-radius: 4px;
+    background: #e8f1fb;
+    color: #0755a1;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 7px 10px;
+    cursor: pointer;
+}
+
+.gateway-ref .exim-consent-otp-status {
+    font-size: 12px;
+    margin: 12px 0 6px !important;
+    color: #487892 !important;
+}
+
+.gateway-ref .exim-consent-message {
+    font-size: 12px;
+    padding: 9px 11px;
+    background: #fff6e7;
+    border-radius: 5px;
+    color: #995510 !important;
+}
+
+.gateway-ref .exim-consent-message[data-tone="error"] {
+    background: #ffeded;
+    color: #a42323 !important;
+}
+
+.gateway-ref .exim-consent-message[data-tone="success"] {
+    background: #eaf9f0;
+    color: #13713d !important;
+}
+
+.gateway-ref .exim-consent-message[hidden] {
+    display: none !important;
+}
+
+.gateway-ref .exim-consent-actions {
+    display: flex;
+    gap: 12px;
+    padding: 14px 24px 7px;
+    justify-content: flex-end;
+}
+
+.gateway-ref .exim-consent-actions button {
+    min-height: 43px;
+    border-radius: 5px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.gateway-ref .exim-consent-cancel {
+    border: 1px solid #d0dae5;
+    background: #f4f6f9;
+    color: #27405e;
+}
+
+.gateway-ref .exim-consent-accept {
+    border: 1px solid #006fa8;
+    background: #007ab7;
+    color: white;
+}
+
+.gateway-ref .exim-consent-accept:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.gateway-ref .exim-consent-disclaimer {
+    font-size: 10px;
+    text-align: center;
+    color: #a15b15;
+    margin: 3px 16px 15px;
+    line-height: 1.5;
+}
+
+@media(max-width:620px) {
+    .gateway-ref .gateway-vnpay-reference img {
+        width: 104px;
+        height: auto;
+    }
+
+    .gateway-ref .gateway-poc-stamp {
+        font-size: 8px;
+    }
+
+    .gateway-ref .exim-consent-head {
+        padding: 15px 17px;
+    }
+
+    .gateway-ref .exim-consent-body {
+        padding: 18px 17px 2px;
+    }
+
+    .gateway-ref .exim-consent-actions {
+        padding: 14px 17px 7px;
+        flex-direction: column-reverse;
+    }
+
+    .gateway-ref .exim-consent-actions button {
+        width: 100%;
+    }
+
+    .gateway-ref .exim-consent-account {
+        grid-template-columns: 1fr;
+    }
+}
