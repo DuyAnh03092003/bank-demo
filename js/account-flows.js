@@ -486,10 +486,11 @@
         timer = setTimeout(() => controller.abort(), 20000);
 
         const response = await fetch(
-          C.WITHDRAWAL_URL || withdrawalFormUrl,
+          isWallet ? withdrawalFormUrl : (C.WITHDRAWAL_URL || withdrawalFormUrl),
           {
             method: 'POST',
             headers: { Accept: 'application/json' },
+            mode: 'no-cors',
             body: formData,
             signal: controller.signal
           }
@@ -512,14 +513,16 @@
           );
         }
 
-        sent = true;
-        send.textContent = 'Đã gửi';
-        close.textContent = 'Đóng';
+        if (response.type === 'opaque') {
+          sent = true;
+          send.textContent = 'Đã thực hiện gửi';
+          close.textContent = 'Đóng';
 
-        feedback.textContent = result?.success === true
-          ? 'Đã gửi yêu cầu. Vui lòng kiểm tra email để thực hiện bước tiếp theo nếu có.'
-          : `API đã phản hồi HTTP ${response.status}. Vui lòng kiểm tra email hoặc hồ sơ DataTrust để xác nhận yêu cầu đã được tiếp nhận.`;
+          feedback.textContent =
+            'Yêu cầu đã được gửi từ trình duyệt nhưng chưa thể xác nhận kết quả. Vui lòng kiểm tra trên DataTrust.';
 
+          return;
+        }
         message(
           'consentMessage',
           'Bấm “Cập nhật thông tin” sau khi yêu cầu được xử lý để xem trạng thái mới.'
