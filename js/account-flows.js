@@ -505,14 +505,6 @@
           // Chưa có mẫu response IRM để xác nhận nội dung phản hồi.
         }
 
-        if (!response.ok || result?.success === false || result?.error) {
-          throw Error(
-            result?.message ||
-            result?.msg ||
-            `API phản hồi lỗi HTTP ${response.status}.`
-          );
-        }
-
         if (response.type === 'opaque') {
           sent = true;
           send.textContent = 'Đã thực hiện gửi';
@@ -523,6 +515,15 @@
 
           return;
         }
+
+        if (!response.ok || result?.success === false || result?.error) {
+          throw Error(
+            result?.message ||
+            result?.msg ||
+            `API phản hồi lỗi HTTP ${response.status}.`
+          );
+        }
+
         message(
           'consentMessage',
           'Bấm “Cập nhật thông tin” sau khi yêu cầu được xử lý để xem trạng thái mới.'
