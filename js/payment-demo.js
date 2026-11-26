@@ -1,5 +1,5 @@
 /*
- * Eximbank Payment Integration POC — browser-only mock payment/OTP flow.
+ * An Tâm Bank Payment Integration POC — browser-only mock payment/OTP flow.
  * Do NOT use as bank, wallet or payment authentication: OTP is generated and
  * checked on the client, and payment completion is only a UI simulation.
  * Consent GET/POST remains real via the pre-existing DT middleware integration.
@@ -123,14 +123,14 @@
   async function getSubject() {
     const records = await D.lookup(state.pnr);
     const subject = D.selectSubject(records, state.phone);
-    if (!subject) throw new Error('Không tìm thấy tài khoản POC. Hãy đăng ký tài khoản trên website Eximbank POC trước.');
+    if (!subject) throw new Error('Không tìm thấy tài khoản POC. Hãy đăng ký tài khoản trên website An Tâm Bank POC trước.');
     return subject;
   }
   async function checkConsent() {
     if (state.busy) return;
     const account = $('payAccount').value.trim();
     const phone = $('payPhone').value.trim();
-    if (!D.isAccountNumber(account)) return setMessage('Vui lòng nhập đúng số tài khoản Eximbank POC đã được tạo.', 'error');
+    if (!D.isAccountNumber(account)) return setMessage('Vui lòng nhập đúng số tài khoản An Tâm Bank POC đã được tạo.', 'error');
     if (!/^0\d{9}$/.test(phone)) return setMessage('Số điện thoại POC phải gồm 10 chữ số và bắt đầu bằng 0.', 'error');
     state.pnr = D.pnr(account); state.phone = phone;
     setBusy(true); setMessage('Đang kiểm tra Consent thực tế trên DataTrust...', 'info');
@@ -141,11 +141,11 @@
         showReady();
       } else {
         state.consentVerified = false;
-        $('paySubjectName').textContent = state.subject.subject_name || 'Khách hàng Eximbank POC';
+        $('paySubjectName').textContent = state.subject.subject_name || 'Khách hàng An Tâm Bank POC';
         $('payMaskedAccount').textContent = mask(state.pnr);
         $('payConsentReason').textContent = $('payDemoExpired').checked
           ? 'Chế độ kiểm thử: sự đồng ý cần được xác nhận lại để tiếp tục.'
-          : 'Chưa có sự đồng ý chia sẻ dữ liệu tài khoản còn hiệu lực. Vui lòng xác nhận theo yêu cầu của Eximbank POC.';
+          : 'Chưa có sự đồng ý chia sẻ dữ liệu tài khoản còn hiệu lực. Vui lòng xác nhận theo yêu cầu của An Tâm Bank POC.';
         openConsentPopup();
       }
     } catch (error) { setMessage(error.message, 'error'); }

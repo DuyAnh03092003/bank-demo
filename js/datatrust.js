@@ -1,6 +1,6 @@
 (() => {
   const C = window.POC_CONFIG;
-  const sessionKey = 'eximbank-poc-session';
+  const sessionKey = 'an-tam-bank-poc-session';
   const accountLength = () => C.ACCOUNT_LENGTH ?? 12;
 
   // PNR được tạo từ số tài khoản, không còn từ số điện thoại.
@@ -156,7 +156,7 @@
     const group = C.CONSENTS[type];
     const purposes = Object.entries(group.checkboxes).flatMap(([key, box]) => box.purposes.map(id => ({ purpose_id: id, status: purposeChoices && Object.prototype.hasOwnProperty.call(purposeChoices, id) ? (purposeChoices[id] ? 'agreed' : 'rejected') : (choices[key] === true ? 'agreed' : 'rejected') })));
     if (!purposes.length) throw Error('Chưa cấu hình purpose cho ' + type);
-    return { method: 'api_sync', pnr: code, channel_context: { int_type: 'checkbox_select', screen_code: screen, screen_vi: screen === 'WALLET_LINK' ? 'Liên kết ví điện tử' : 'Đăng ký mở tài khoản', screen_en: screen === 'WALLET_LINK' ? 'Wallet Link' : 'Account Registration', comp_type: 'inline_form', text: Object.values(group.checkboxes).map(x => x.label).join('\n'), method: 'ui_interaction', action: screen === 'WALLET_LINK' ? 'Đồng ý và liên kết' : 'Xác nhận đăng ký' }, device_info: device(), source: { sys_name: 'Website POC Eximbank', sys_code: 'EXIMBANK_POC', channel: 'web_app', col_type: 'processor_third_party', col_name: 'DataTrust' }, datas: [{ ...subject, sub_code: '', is_submitter: true, purposes }] };
+    return { method: 'api_sync', pnr: code, channel_context: { int_type: 'checkbox_select', screen_code: screen, screen_vi: screen === 'WALLET_LINK' ? 'Liên kết ví điện tử' : 'Đăng ký mở tài khoản', screen_en: screen === 'WALLET_LINK' ? 'Wallet Link' : 'Account Registration', comp_type: 'inline_form', text: Object.values(group.checkboxes).map(x => x.label).join('\n'), method: 'ui_interaction', action: screen === 'WALLET_LINK' ? 'Đồng ý và liên kết' : 'Xác nhận đăng ký' }, device_info: device(), source: { sys_name: 'Website POC An Tâm Bank', sys_code: 'ANTAM_BANK_POC', channel: 'web_app', col_type: 'processor_third_party', col_name: 'DataTrust' }, datas: [{ ...subject, sub_code: '', is_submitter: true, purposes }] };
   }
   async function submit(type, body) {
     const productId = C.CONSENTS[type].productId;

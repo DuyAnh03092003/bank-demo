@@ -1,4 +1,4 @@
-BẢN CHỈNH SỬA WEBSITE POC EXIMBANK – 12/11/2026
+BẢN CHỈNH SỬA WEBSITE POC AN TÂM BANK – 12/11/2026
 
 1. MỞ TÀI KHOẢN
 - Giữ giao diện Dịch vụ ngân hàng, ô chọn bắt buộc và không bắt buộc.
@@ -15,7 +15,7 @@ BẢN CHỈNH SỬA WEBSITE POC EXIMBANK – 12/11/2026
 - Xin lại sự đồng ý chia theo sản phẩm; giữ nguyên cách gửi API và chức năng rút lại.
 
 3. THANH TOÁN / LIÊN KẾT VÍ
-- Popup Eximbank Banking Authorization, một mục đích, không checkbox, xem chính sách,
+- Popup An Tâm Bank Banking Authorization, một mục đích, không checkbox, xem chính sách,
   Hủy/Đồng ý và liên kết.
 - Popup kết quả: Thanh toán thành công!/Thanh toán thất bại!; đóng sau 5 giây.
 

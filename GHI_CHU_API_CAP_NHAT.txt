@@ -1,4 +1,4 @@
-BẢN CẬP NHẬT API CONSENT / IRM - POC EXIMBANK
+BẢN CẬP NHẬT API CONSENT / IRM - POC AN TÂM BANK
 
 1. Cập nhật sự đồng ý:
 - Từng sản phẩm có nút Cập nhật sự đồng ý.

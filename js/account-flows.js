@@ -248,7 +248,7 @@
     padding:24px;
     border:1px solid #dce7ef;
     border-radius:14px;
-    color:#17324d;
+    color:#174d35;
   `;
 
     dialog.innerHTML = `
@@ -723,7 +723,7 @@
         D.saveSession(current.pnr, subject);
         const accountNumber = current.pnr.startsWith(C.PNR_PREFIX) ? current.pnr.slice(C.PNR_PREFIX.length) : current.pnr;
         const customerName = $('customerName');
-        if (customerName) customerName.textContent = subject.subject_name || 'Khách hàng Eximbank';
+        if (customerName) customerName.textContent = subject.subject_name || 'Khách hàng An Tâm Bank';
         message('customerSummary', `Tài khoản: ${accountNumber.replace(/.(?=.{4})/g, '•')} · Mã tham chiếu: ${current.pnr}`);
         let count = 0;
         const products = new Map();
@@ -897,13 +897,13 @@
     const confirmLink = (subject, code, phone, expired) => new Promise(resolve => {
       const modal = document.createElement('dialog'); modal.className = 'poc-dialog bank-authorization';
       const h = document.createElement('div'); h.className = 'bank-auth-head';
-      const brand = document.createElement('strong'); brand.textContent = 'EXIMBANK';
+      const brand = document.createElement('strong'); brand.textContent = 'AN TÂM BANK';
       const subtitle = document.createElement('small'); subtitle.textContent = 'XÁC NHẬN LIÊN KẾT VÍ ĐIỆN TỬ'; h.append(brand, subtitle);
       const title = document.createElement('h2'); title.textContent = 'Cho phép liên kết tài khoản?';
       const desc = document.createElement('p'); desc.textContent = expired ? 'Sự đồng ý trước đó đã hết hiệu lực. Vui lòng xác nhận để tiếp tục.' : 'ShopeePay yêu cầu bạn xác nhận mục đích xử lý dữ liệu dưới đây.';
       const info = document.createElement('div'); info.className = 'bank-auth-account';
-      const name = document.createElement('strong'); name.textContent = subject.subject_name || 'Khách hàng Eximbank';
-      const number = document.createElement('small'); number.textContent = `Tài khoản Eximbank: ****${code.slice(-4)} · ShopeePay`;
+      const name = document.createElement('strong'); name.textContent = subject.subject_name || 'Khách hàng An Tâm Bank';
+      const number = document.createElement('small'); number.textContent = `Tài khoản An Tâm Bank: ****${code.slice(-4)} · ShopeePay`;
       info.append(name, number);
       const purpose = document.createElement('div'); purpose.className = 'bank-auth-purpose';
       const purposeTitle = document.createElement('strong'); purposeTitle.textContent = purposeNames[C.CONSENTS.account_link.checkboxes.wallet_link.purposes[0]] || 'Liên kết và sử dụng dịch vụ đối tác';

@@ -60,7 +60,7 @@
     if (!Object.keys(cart).length) { window.showToast('Vui lòng thêm sản phẩm vào giỏ hàng trước.'); return; }
     const method = document.querySelector('input[name="pay"]:checked').value; $('cartOverlay').classList.add('hidden');
     if (method === 'shopeepay') { $('walletPage').classList.remove('hidden'); document.title = 'Payment POC | Thanh toán mô phỏng'; window.POC_PAYMENT?.start({ amount: Object.entries(cart).reduce((sum, [id, qty]) => sum + productData.find(p => p.id === id).price * qty, 0) }); }
-    else window.showPaymentResult(true, 'Thanh toán qua tài khoản Eximbank được mô phỏng trong POC.');
+    else window.showPaymentResult(true, 'Thanh toán qua tài khoản An Tâm Bank được mô phỏng trong POC.');
   });
   $('walletBack').addEventListener('click', closeWallet); $('walletCancel').addEventListener('click', closeWallet);
   renderProducts(); updateCart();

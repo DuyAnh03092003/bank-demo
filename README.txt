@@ -1,4 +1,4 @@
-EXIMBANK POC — TÍCH HỢP CONSENT
+AN TÂM BANK POC — TÍCH HỢP CONSENT
 
 1. CẤU HÌNH
 Mở js/config.js:
@@ -12,7 +12,7 @@ Mở js/config.js:
   JSON hợp lệ, không có success:false hoặc error. Chưa có mẫu response POST chính thức.
 
 2. CHẠY
-Giải nén giữ nguyên thư mục. Chạy HTTP server trong thư mục eximbank-poc, ví dụ:
+Giải nén giữ nguyên thư mục. Chạy HTTP server trong thư mục bank-demo, ví dụ:
   python -m http.server 8080
 Mở http://localhost:8080/index.html
 API cần cho phép CORS từ địa chỉ web chạy POC, các header Authorization,
@@ -20,7 +20,7 @@ X-Forwarded-For, Accept và các phương thức GET/POST/OPTIONS.
 
 3. LUỒNG
 - Đăng ký: kiểm tra PNR trùng trước khi xem lại và trước lần gửi đầu.
-- Số tài khoản = số điện thoại. Tên đăng nhập/PNR = EXIMBANK + số điện thoại.
+- Số tài khoản = số điện thoại. Tên đăng nhập/PNR = số điện thoại đã đăng ký.
 - sub_code rỗng, một chủ thể is_submitter:true. Ngày sinh chuyển DDMMYYYY.
 - Checkbox có data-consent-type và data-consent-key. Hai nhóm gửi riêng.
 - Chọn: agreed; không chọn: rejected. Các list ngân hàng trống sẽ chặn gửi.
